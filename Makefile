@@ -16,15 +16,15 @@ all:
 	-rm *.mod.c
 
 	for in in $(MY_OBJS); do \
-		out=$${in/.o/.reglist}; \
+		out=$${in/.o/.smia_reglist}; \
 		$(CROSS)objcopy -O binary $$in $$out; \
 	done
 
 distclean: clean
-	-rm *.reglist
+	-rm *.smia_reglist
 
 clean:
-	-rm *.o *.ko
+	-rm *.o *.ko *~
 
 else
 
