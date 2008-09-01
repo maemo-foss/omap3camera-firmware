@@ -93,10 +93,10 @@ static struct smia_reglist list_mode16_1_3_864x656_14_95fps = {
 
 struct smia_meta_reglist smia_meta_reglist = {
 	.version = "et8ek8 0002 2008-08-13",
-	.reglist_int = {
-		(uintptr_t)&standby,
-		(uintptr_t)&poweron,
-		(uintptr_t)&list_mode16_1_3_864x656_14_95fps,
-		(uintptr_t)NULL,
+	.reglist = {
+		{ .offset = (uintptr_t)&standby },
+		{ .offset = (uintptr_t)&poweron },
+		{ .offset = (uintptr_t)&list_mode16_1_3_864x656_14_95fps },
+		{ .offset = (uintptr_t)NULL },
 	}
 };
