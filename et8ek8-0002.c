@@ -73,8 +73,8 @@ static struct smia_reglist poweron = {
 };
 
 static struct smia_reglist list_mode16_1_3_864x656_14_95fps = {
-	.type = SMIA_REGLIST_MODE(0),
-	.mode = { .width = 874, .height = 654, .timeperframe = { 2989, 100 }, .max_exp = ET8EK8_MES_MAX, .data_mode = V4L2_PIX_FMT_SGRBG10 },
+	.type = SMIA_REGLIST_MODE,
+	.mode = { .width = 874, .height = 654, .timeperframe = { 100, 2989 }, .max_exp = ET8EK8_MES_MAX, .format = V4L2_PIX_FMT_SGRBG10 },
 	.regs = {
 		 { SMIA_REG_8BIT, 0x1239, 0x64 },
 		 { SMIA_REG_8BIT, 0x1238, 0x02 },
