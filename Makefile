@@ -7,7 +7,7 @@ CROSS_COMPILE ?= arm-linux-
 .PHONY: all
 
 ifeq ($(KERNELRELEASE), )
-export MY_SRCS := $(wildcard *.c)
+export MY_SRCS := $(wildcard src/*.c)
 export MY_OBJS := $(patsubst %.c, %.o, $(MY_SRCS))
 
 all:
@@ -20,11 +20,15 @@ all:
 		$(CROSS_COMPILE)objcopy -O binary $$in $$out; \
 	done
 
+	-find -name "*.mod.*" | xargs rm
+
 distclean: clean
-	-rm *.smia_reglist
+	-find -name *.smia_reglist | xargs rm
 
 clean:
-	-rm *.o *.ko *~
+	-find -name "*.o" | xargs rm
+	-find -name "*.ko" | xargs rm
+	-find -name "*~" | xargs rm
 
 else
 
