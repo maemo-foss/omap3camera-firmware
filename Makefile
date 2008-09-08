@@ -2,7 +2,7 @@ ifeq ($(KDIR), )
 $(error KDIR undefined!)
 endif
 
-CROSS ?= arm-linux-
+CROSS_COMPILE ?= arm-linux-
 
 .PHONY: all
 
@@ -16,8 +16,8 @@ all:
 	-rm *.mod.c
 
 	for in in $(MY_OBJS); do \
-		out=$${in/.o/.smia_reglist}; \
-		$(CROSS)objcopy -O binary $$in $$out; \
+		out="`echo "$$in" | sed 's/.o$$/.smia_reglist/'`"; \
+		$(CROSS_COMPILE)objcopy -O binary $$in $$out; \
 	done
 
 distclean: clean
