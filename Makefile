@@ -25,7 +25,7 @@ all:
 	-(find -name "*.mod.*" | xargs rm)
 
 distclean: clean
-	-find -name *.smia_reglist | xargs rm
+	-(cd src && find -name "*.c" | xargs rm)
 
 clean:
 	-find -name "*.o" | xargs rm
@@ -36,7 +36,6 @@ clean:
 	-(cd src && find -name ".*cmd" | xargs rm)
 	-(cd src && find -name "*.o" | xargs rm)
 	-(cd src && find -name "*.ko" | xargs rm)
-	-(cd src && find -name "*.c" | xargs rm)
 
 include Makefile.sensor
 
