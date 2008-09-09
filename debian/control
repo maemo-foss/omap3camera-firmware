@@ -1,8 +1,8 @@
 Source: rx51-sensor-reglist
 Section: unknown
 Priority: optional
-Maintainer: Sakari Ailus <sakari.ailus@unokia.com>
-Build-Depends: debhelper (>= 4.0.0)
+Maintainer: Sakari Ailus <sakari.ailus@nokia.com>
+Build-Depends: debhelper (>= 5.0.0)
 Standards-Version: 3.8.0
 
 Package: rx51-sensor-reglist
