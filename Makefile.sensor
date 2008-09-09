@@ -1,0 +1,2 @@
+modes:
+	./makemodes.pl ini/stingraytsb_v06.txt > src/et8ek8-0002.c

@@ -1,0 +1,407 @@
+########################################################################################
+#
+# Stingray sensor settings 
+# 	v01 bw
+#	v02 color 08.08.2007
+#	v03 color
+#	v04 based on "MMS_Stingray_Sensor_Mode_Setting_Calculator.xls" 31.08.2007
+#           15fps&30fps modes added, Hcount corrected (removes colorcast from right edge)
+#   	v05 power-up settings minimized (based on application note E70 command table)
+#	v06 based on "MMS_Stingray_Sensor_Mode_Setting_Calculator_V1.7" 21.09.2007
+#
+########################################################################################
+#
+#
+########################################################################################
+#
+# Scooby HW settings - these are set always, immediately. Can not be inside mode settings.
+#
+# Configure powersupplies, I2C speed and ExtClk.
+#
+P VBAT    3.80		Battery voltage
+P VANA 	  2.80		Analog supply voltage
+P VDIG 	  1.80		Digital supply voltage
+C EXTCLK  1 1 		ExtClk source: 1=19.200, 2=26.000, 3=98.304MHz ; Divider: 0=/1,1=/2, 2=/4 ... 7=/14
+I SPEED   400.0		I2C speed in kHz
+#
+########################################################################################
+# Sensor Mode0 - power down
+#
+########################################################################################
+S Mode0_powerdown
+L XSHD	0		XSHUTDOWN low
+D 1
+L VDIG  0		VDIG off
+D 1
+L VANA  0		VANA off
+D 1
+L VBAT  0		VBAT off
+########################################################################################
+# Sensor power-on config
+#
+########################################################################################
+S Mode1_poweron_Mode2_16VGA_2592x1968_12.25fps
+L XSHD    0		XSHUTDOWN lo
+L VBAT	  1		VBAT on
+D 1
+L VANA	  1		VANA on
+D 1
+L VDIG	  1		VDIG on
+D 5
+L XSHD    1		XSHUTDOWN hi
+D 5
+ 126C CC ;LSTB/ */ */ */ */ */ */ *
+ 1252 B0 ;SLEEP/ */ */ */ */ */ */ *
+ 1220 89 ;H_COUNT[7-0]
+ 123A 07 ; VCO_DIV[3-0]/ SPCK_DIV[3-0]
+ 1241 94 ;*/ */ */ */ */ */ */ *
+ 1242 02 ;*/ */ */ */ */ */ */ *
+ 124B 00 ;*/ */ */ */ */ */ */ *
+ 1255 FF ;*/ */ */ */ */ */ */ *
+ 1256 9F ;*/ */ */ */ */ */ */ *
+ 1258 00 ;*/ */ */ */ */ */ */ *
+ 125D 88 ;CCP_LVDS_MODE/ */ */ */ */ CCP_COMP_MODE[2-0]
+ 125E C0 ;*/ */ EMBEDDED_DATA/ */ */ */ */ *
+ 1263 98 ;*/ */ */ */ */ */ */ *
+ 1268 C6 ;*/ */ */ */ */ */ */ *
+ 1434 00 ;*/ */ */ */ */ */ */ *
+ 1163 44 ;*/ */ */ */ */ */ */ *
+ 1166 29 ;*/ */ */ */ */ */ */ *
+ 1140 02 ;*/ */ */ */ */ */ */ *
+ 1011 24 ;*/ */ */ */ */ */ */ *
+ 1646 00 ;*/ */ */ */ */ */ */ *
+ 1648 00 ;*/ */ */ */ */ */ */ *
+ 1151 80 ;*/ */ */ */ */ */ */ *
+ 1152 23 ;*/ */ */ */ */ */ */ *
+ 1244 11 ;MES
+#S Mode2_16VGA_2592x1968_12.25fps
+ 1239 65
+ 1238 82
+ 123B 70
+ 123A 07
+ 121B 64
+ 121D 64
+ 1221 00
+ 1220 89
+ 1223 00
+ 1222 54
+# AFV and APS config for mode1
+F imageFormat      1	1=raw10 
+F imageWidth	2592	Number of pixels in one line
+F imageHeight	1968	Number of lines in active image
+F paxelTopLine	 328	Top line of AFV&APS window (y0)
+F paxelLeftPixel 432	Left column of AFV&APS window (x0)
+F paxelWidth 	 576	Number of pixels in one Paxel
+F paxelHeight    437	Number of lines in one Paxel
+########################################################################################
+# Sensor Mode
+#
+########################################################################################
+S Mode1_16VGA_2592x1968_13.12fps_DPCM10-8
+ 1239 57
+ 1238 82
+ 123B 70
+ 123A 06
+ 121B 64
+ 121D 64
+ 1221 00
+ 1220 7E
+ 1223 00
+ 1222 54
+ 125D 83 ;CCP_LVDS_MODE/ */ */ */ */ CCP_COMP_MODE[2-0]
+########################################################################################
+# Sensor Mode
+#
+########################################################################################
+S Mode2_16VGA_2592x1968_12.25fps
+ 1239 65
+ 1238 82
+ 123B 70
+ 123A 07
+ 121B 64
+ 121D 64
+ 1221 00
+ 1220 89
+ 1223 00
+ 1222 54
+ 125D 88 ;CCP_LVDS_MODE/ */ */ */ */ CCP_COMP_MODE[2-0]
+# AFV and APS config for mode1
+F imageFormat      1	1=raw10 
+F imageWidth	2592	Number of pixels in one line
+F imageHeight	1968	Number of lines in active image
+F paxelTopLine	 328	Top line of AFV&APS window (y0)
+F paxelLeftPixel 432	Left column of AFV&APS window (x0)
+F paxelWidth 	 576	Number of pixels in one Paxel
+F paxelHeight    437	Number of lines in one Paxel
+########################################################################################
+#
+# 15fps MODES -------- > > > >
+#
+########################################################################################
+# Sensor Mode
+#
+########################################################################################
+S Mode3_4VGA_1296x984_14.91fps_DPCM10-8
+ 1239 7B
+ 1238 82
+ 123B 70
+ 123A 17
+ 121B 63
+ 121D 63
+ 1221 00
+ 1220 89
+ 1223 00
+ 1222 54
+ 125D 83 ;CCP_LVDS_MODE/ */ */ */ */ CCP_COMP_MODE[2-0]
+# AFV and APS config for mode
+F imageFormat      1	1=raw10 
+F imageWidth	1296	Number of pixels in one line
+F imageHeight	 984	Number of lines in active image
+F paxelTopLine	 164	Top line of AFV&APS window (y0)
+F paxelLeftPixel 216	Left column of AFV&APS window (x0)
+F paxelWidth 	 288	Number of pixels in one Paxel
+F paxelHeight    219	Number of lines in one Paxel
+########################################################################################
+# Sensor Mode
+#
+########################################################################################
+S Mode4_SVGA_864x656_14.94fps
+ 1239 64
+ 1238 02
+ 123B 71
+ 123A 17
+ 121B 62
+ 121D 62
+ 1221 00
+ 1220 A6
+ 1223 00
+ 1222 54
+ 125D 88 ;CCP_LVDS_MODE/ */ */ */ */ CCP_COMP_MODE[2-0]
+# AFV and APS config for mode
+F imageFormat      1	1=raw10 
+F imageWidth	 864	Number of pixels in one line
+F imageHeight	 656	Number of lines in active image
+F paxelTopLine	 109	Top line of AFV&APS window (y0)
+F paxelLeftPixel 144	Left column of AFV&APS window (x0)
+F paxelWidth 	 192	Number of pixels in one Paxel
+F paxelHeight    146	Number of lines in one Paxel
+########################################################################################
+# Sensor Mode
+#
+########################################################################################
+S Mode5_VGA_648x492_14.96fps
+ 1239 64
+ 1238 02
+ 123B 71
+ 123A 17
+ 121B 61
+ 121D 61
+ 1221 00
+ 1220 DD
+ 1223 00
+ 1222 54
+ 125D 88 ;CCP_LVDS_MODE/ */ */ */ */ CCP_COMP_MODE[2-0]
+# AFV and APS config for mode
+F imageFormat      1	1=raw10 
+F imageWidth	 656	Number of pixels in one line
+F imageHeight	 492	Number of lines in active image
+F paxelTopLine	  82	Top line of AFV&APS window (y0)
+F paxelLeftPixel 108	Left column of AFV&APS window (x0)
+F paxelWidth 	 144	Number of pixels in one Paxel
+F paxelHeight    109	Number of lines in one Paxel
+########################################################################################
+# Sensor Mode
+#
+########################################################################################
+S Mode13_1/2_1296x984_15.00fps_DPCM10-8
+ 1239 64
+ 1238 02
+ 123B 71
+ 123A 16
+ 121B 34
+ 121D 34
+ 1221 00
+ 1220 7E
+ 1223 00
+ 1222 54
+ 125D 83 ;CCP_LVDS_MODE/ */ */ */ */ CCP_COMP_MODE[2-0]
+########################################################################################
+# Sensor Mode
+#
+########################################################################################
+S Mode16_1/3_864x656_14.95fps
+ 1239 64
+ 1238 02
+ 123B 71
+ 123A 17
+ 121B 24
+ 121D 24
+ 1221 00
+ 1220 A4
+ 1223 00
+ 1222 55
+ 125D 88 ;CCP_LVDS_MODE/ */ */ */ */ CCP_COMP_MODE[2-0]
+########################################################################################
+# Sensor Mode
+#
+########################################################################################
+S Mode18_1/4_648x492_14.96fps
+ 1239 64
+ 1238 02
+ 123B 71
+ 123A 17
+ 121B 14
+ 121D 14
+ 1221 00
+ 1220 DD
+ 1223 00
+ 1222 54
+ 125D 88 ;CCP_LVDS_MODE/ */ */ */ */ CCP_COMP_MODE[2-0]
+########################################################################################
+# Sensor Mode
+#
+########################################################################################
+S Mode19_1/6_432x328_14.99fps
+ 1239 64
+ 1238 02
+ 123B 71
+ 123A 17
+ 121B 04
+ 121D 04
+ 1221 01
+ 1220 4B
+ 1223 00
+ 1222 54
+ 125D 88 ;CCP_LVDS_MODE/ */ */ */ */ CCP_COMP_MODE[2-0]
+########################################################################################
+#
+# 30fps MODES -------- > > > >
+#
+########################################################################################
+# Sensor Mode
+#
+########################################################################################
+S Mode3_4VGA_1296x984_29.99fps_DPCM10-8
+ 1239 64
+ 1238 02
+ 123B 71
+ 123A 06
+ 121B 63
+ 121D 63
+ 1221 00
+ 1220 7E
+ 1223 00
+ 1222 54
+ 125D 83 ;CCP_LVDS_MODE/ */ */ */ */ CCP_COMP_MODE[2-0]
+########################################################################################
+# Sensor Mode
+#
+########################################################################################
+S Mode4_SVGA_864x656_29.88fps
+ 1239 64
+ 1238 02
+ 123B 71
+ 123A 07
+ 121B 62
+ 121D 62
+ 1221 00
+ 1220 A6
+ 1223 00
+ 1222 54
+ 125D 88 ;CCP_LVDS_MODE/ */ */ */ */ CCP_COMP_MODE[2-0]
+# AFV and APS config for mode
+F imageFormat      1	1=raw10 
+F imageWidth	 864	Number of pixels in one line
+F imageHeight	 656	Number of lines in active image
+F paxelTopLine	 109	Top line of AFV&APS window (y0)
+F paxelLeftPixel 144	Left column of AFV&APS window (x0)
+F paxelWidth 	 192	Number of pixels in one Paxel
+F paxelHeight    146	Number of lines in one Paxel
+########################################################################################
+# Sensor Mode
+#
+########################################################################################
+S Mode5_VGA_648x492_29.93fps
+ 1239 64
+ 1238 02
+ 123B 71
+ 123A 07
+ 121B 61
+ 121D 61
+ 1221 00
+ 1220 DD
+ 1223 00
+ 1222 54
+ 125D 88 ;CCP_LVDS_MODE/ */ */ */ */ CCP_COMP_MODE[2-0]
+# AFV and APS config for mode
+F imageFormat      1	1=raw10 
+F imageWidth	 656	Number of pixels in one line
+F imageHeight	 492	Number of lines in active image
+F paxelTopLine	  82	Top line of AFV&APS window (y0)
+F paxelLeftPixel 108	Left column of AFV&APS window (x0)
+F paxelWidth 	 144	Number of pixels in one Paxel
+F paxelHeight    109	Number of lines in one Paxel
+########################################################################################
+# Sensor Mode
+#
+########################################################################################
+S Mode13_1/2_1296x984_29.99fps_DPCM10-8
+ 1239 64
+ 1238 02
+ 123B 71
+ 123A 06
+ 121B 34
+ 121D 34
+ 1221 00
+ 1220 7E
+ 1223 00
+ 1222 54
+ 125D 83 ;CCP_LVDS_MODE/ */ */ */ */ CCP_COMP_MODE[2-0]
+########################################################################################
+# Sensor Mode
+#
+########################################################################################
+S Mode16_1/3_864x656_29.89fps
+ 1239 64
+ 1238 02
+ 123B 71
+ 123A 07
+ 121B 24
+ 121D 24
+ 1221 00
+ 1220 A4
+ 1223 00
+ 1222 55
+ 125D 88 ;CCP_LVDS_MODE/ */ */ */ */ CCP_COMP_MODE[2-0]
+########################################################################################
+# Sensor Mode
+#
+########################################################################################
+S Mode18_1/4_648x492_29.93fps
+ 1239 64
+ 1238 02
+ 123B 71
+ 123A 07
+ 121B 14
+ 121D 14
+ 1221 00
+ 1220 DD
+ 1223 00
+ 1222 54
+ 125D 88 ;CCP_LVDS_MODE/ */ */ */ */ CCP_COMP_MODE[2-0]
+########################################################################################
+# Sensor Mode
+#
+########################################################################################
+S Mode19_1/6_432x328_29.97fps
+ 1239 64
+ 1238 02
+ 123B 71
+ 123A 07
+ 121B 04
+ 121D 04
+ 1221 01
+ 1220 4B
+ 1223 00
+ 1222 54
+ 125D 88 ;CCP_LVDS_MODE/ */ */ */ */ CCP_COMP_MODE[2-0]

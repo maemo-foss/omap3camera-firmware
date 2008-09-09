@@ -49,18 +49,34 @@ sub flush {
 sub generate_modelist {
 	my $pass = shift(@_);
 	my $modenum = 0;
+	my $incomment = 0;	# 0=no any comment yet, 1=some comments done, 2=currently in comment
 	$m = 0;
 
 	open(my $fh, "<", $inifile) or die("can not open input file\n");
 	while (<$fh>) {
 		$_ =~ s/\r//;
 		chomp;
-		$_ =~ s/#.*//;
 		if (length($_) <= 0) { next; }
 		my @a = split(/[\t ]+/);
 		my $o = $_;
 		$o =~ s/\*\//##/g;
 		$o =~ s/;//g;
+		if (substr($_,0,1) eq "#") {
+			if ($incomment==2) {
+				$o =~ s/^#/ \*/;
+			} else {
+				if ($pass!=1 && $incomment==0) { next; }
+				if ($pass==1 && $incomment==1 && $modenum>0) { next; }
+				$incomment = 2;
+				$o =~ s/^#/\/\*/;
+			}
+		} else {
+			if ($incomment==2) {
+				$incomment = 1;
+				print(" */\n");
+			};
+		}
+		$o =~ s/#.*$//;
 		/^ / && do {
 			if ($pass!=2) { next; }
 			my $c = substr($o,9);
@@ -90,11 +106,14 @@ sub generate_modelist {
 				$modelist_max_exp[$modenum] = 0;
 				$modelist_max_gain[$modenum] = 0;
 				$modelist_pixel_format[$modenum] = $modelist_pixel_format[0];
-				if (!$modelist_pixel_format[$modenum]) { $modelist_pixel_format[$modenum] = "V4L2_PIX_FMT_SGRBG10"; }
+				if ($modelist_pixel_format[0]) {
+					$modelist_pixel_format[$modenum] = $modelist_pixel_format[0];
+				}
 				$modelist_type[$modenum] = "SMIA_REGLIST_MODE";
 				$modelist_bayer[$modenum] = 0;
 				$modelist_blacklvl[$modenum] = 0;
 				$modelist_satlvl[$modenum] = 0;
+				next;
 			}
 			if ($pass==2) {
 				if (!$modelist_width[$modenum]) {
@@ -122,12 +141,18 @@ sub generate_modelist {
 				if ($l =~ /DPCM10/i) {
 					$modelist_pixel_format[$modenum] = "V4L2_PIX_FMT_SGRBG10DPCM8";
 				}
+				if (!$modelist_pixel_format[$modenum]) {
+					$modelist_pixel_format[$modenum] = "V4L2_PIX_FMT_SGRBG10";
+				}
 				if ($l =~ /powerdown/) {
 					$modelist_type[$modenum] = "SMIA_REGLIST_STANDBY";
 				}
+				if ($l =~ /poweron/) {
+					$modelist_type[$modenum] = "SMIA_REGLIST_POWERON";
+				}
 				$o = "\n";
 				$o .= "/* " . $l . " */\n";
-				$o .= "const static struct smia_reglist $c = {	/* $modenum */\n";
+				$o .= "static struct smia_reglist $c = {	/* $modenum */\n";
 				$o .= "	.type = $modelist_type[$modenum],\n";
 				$o .= "	.mode = {\n" .
 				      "		.width = $modelist_width[$modenum],\n" .
@@ -149,7 +174,7 @@ sub generate_modelist {
 				$o .= "	.regs = {";
 			}
 			if ($pass == 3) {
-				$o = "		(uintptr_t)&$c,";
+				$o = "		{ .offset = (uintptr_t)&$c },";
 			}
 		};
 		/^F/ && do {
@@ -161,6 +186,7 @@ sub generate_modelist {
 				if ($o =~ /^F[\t ]*imageHeight/) { $modelist_height[$modenum]    = $n; }
 				if ($o =~ /^F[\t ]*etMax/)       { $modelist_max_exp[$modenum]   = $n; }
 				if ($o =~ /^F[\t ]*agMax/)       { $modelist_max_gain[$modenum]  = $n; }
+				next;
 			}
 			if ($pass==2) {
 				flush();
@@ -172,7 +198,10 @@ sub generate_modelist {
 		};
 		(/^P/ || /^I/ || /^L/ || /^A/) && do {
 			if ($pass!=2) { next; }
-			$o = "		/* " . substr($o,2) . " */";
+			my $o2 = $o;
+			$o = "";
+			$o .= "		" if ($modenum!=0);
+			$o .= "/* " . substr($o2,2) . " */";
 		};
 		/^C/ && do {
 			if ($pass!=1) { next; }
@@ -220,26 +249,33 @@ sub generate_modelist {
 			};
 			/^N[ \t]+CODING[ \t]+/i && do {		# Frame coding: 0=raw8, 1=raw10, 2=raw12, 3=dpcm10to8, 4=dpcm12to8
 				my $n = $o;
-				$n =~ s/^.*CODING[ \t]+//i;
-				$modelist_pixel_format[0] = "0";
-				if ($n == 0) { $modelist_pixel_format[0] = "V4L2_PIX_FMT_SGRBG8"; }
-				if ($n == 1) { $modelist_pixel_format[0] = "V4L2_PIX_FMT_SGRBG10"; }
-				#if ($n == 2) { $modelist_pixel_format[0] = "V4L2_PIX_FMT_SGRBG12"; }
-				if ($n == 3) { $modelist_pixel_format[0] = "V4L2_PIX_FMT_SGRBG10DPCM8"; }
-				#if ($n == 4) { $modelist_pixel_format[0] = "V4L2_PIX_FMT_SGRBG12DPCM8"; }
+				$n =~ s/^.*CODING[ \t]+([0-9]+).*$/$1/i;
+				if (0) {
+					# This cannot be trusted to so disable it for now
+					$modelist_pixel_format[0] = "0";
+					if ($n == 0) { $modelist_pixel_format[0] = "V4L2_PIX_FMT_SGRBG8"; }
+					if ($n == 1) { $modelist_pixel_format[0] = "V4L2_PIX_FMT_SGRBG10"; }
+					#if ($n == 2) { $modelist_pixel_format[0] = "V4L2_PIX_FMT_SGRBG12"; }
+					if ($n == 3) { $modelist_pixel_format[0] = "V4L2_PIX_FMT_SGRBG10DPCM8"; }
+					#if ($n == 4) { $modelist_pixel_format[0] = "V4L2_PIX_FMT_SGRBG12DPCM8"; }
+					$modelist_pixel_format[$modenum] = $modelist_pixel_format[0];
+				}
 			};
 			/^N[ \t]+BLACKLVL[ \t]+/i && do {	# Black level
 			};
 			/^N[ \t]+SATLVL[ \t]+/i && do {		# Saturation level
 			};
 			next if ($pass != 2);
-			$o = "		/* " . substr($o,2) . " */";
+			my $o2 = $o;
+			$o = "";
+			$o .= "		" if ($modenum!=0);
+			$o .= "/* " . substr($o2,2) . " */";
 		};
 		/^V/ && do {
 			$version = $o;
 			next;
 		};
-		print("$o\n") if ($pass==2 || $pass==3);
+		print("$o\n");
 	}
 	flush() if ($pass==2);
 	close($fh);
@@ -249,7 +285,11 @@ sub generate_modelist {
 $fmtspec = 0;
 
 print("/* Automatically generated code from Scooby\n" .
-      " * configuration file by makemodes.pl. */\n\n" .
+      " * configuration file `");
+my $s = $inifile;
+$s =~ s/^.+\///;
+print($s);
+print("' by makemodes.pl. */\n\n" .
       "\n" .
       "#include <media/smiaregs.h>\n" .
       "#include <linux/videodev2.h>\n" .
@@ -261,7 +301,7 @@ print("\n" .
       "	.version = \"$version\",\n" .
       "	.reglist = {\n");
 generate_modelist(3);
-print("		0\n" .
+print("		{ .offset = 0 }\n" .
       "	}\n" .
       "};\n" .
       "\n");
