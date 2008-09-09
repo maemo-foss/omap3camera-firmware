@@ -1,4 +1,4 @@
-rx51-sensor-reglist (0-1) unstable; urgency=low
+rx51-sensor-reglist (0.0.1) unstable; urgency=low
 
   * Initial Release.
 
