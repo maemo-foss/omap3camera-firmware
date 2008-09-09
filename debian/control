@@ -1,0 +1,12 @@
+Source: rx51-sensor-reglist
+Section: unknown
+Priority: optional
+Maintainer: Sakari Ailus <sakari.ailus@unokia.com>
+Build-Depends: debhelper (>= 4.0.0)
+Standards-Version: 3.6.1
+
+Package: rx51-sensor-reglist
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Register list images for RX-51
+ <insert long description, indented with spaces>
