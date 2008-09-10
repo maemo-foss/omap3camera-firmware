@@ -3,7 +3,7 @@
 
 #export DH_VERBOSE=1
 
-PACKAGE := $(shell dpkg-parsechangelog --format dpkg | awk '/Source/{print $$2}')
+PACKAGE := $(shell dpkg-parsechangelog | awk '/Source/{print $$2}')
 
 build:
 
