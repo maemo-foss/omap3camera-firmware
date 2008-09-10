@@ -1,3 +1,9 @@
+camera-firmware (0.0.2) unstable; urgency=low
+
+  * Changed package name
+
+ -- Yauheni Kaliuta <yauheni.kaliuta@nokia.com>  Wed, 10 Sep 2008 12:02:40 +0300
+
 rx51-sensor-reglist (0.0.1) unstable; urgency=low
 
   * Initial Release.
