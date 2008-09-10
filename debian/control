@@ -1,5 +1,5 @@
 Source: camera-firmware
-Section: unknown
+Section: misc
 Priority: optional
 Maintainer: Sakari Ailus <sakari.ailus@nokia.com>
 Build-Depends: debhelper (>= 5.0.0)
