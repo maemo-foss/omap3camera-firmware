@@ -1,4 +1,11 @@
-rx51-sensor-reglist (0.0.1) unstable; urgency=low
+camera-firmware (0.0.3) unstable; urgency=low
+
+  * Renamed package and other stuff.
+  * Added license.
+
+ -- Sakari Ailus <sakari.ailus@nokia.com>  Tue, 16 Sep 2008 15:46:22 +0300
+
+camera-firmware (0.0.1) unstable; urgency=low
 
   * Initial Release.
 
