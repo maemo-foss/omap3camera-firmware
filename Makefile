@@ -13,6 +13,8 @@ export MY_OBJS := $(patsubst %.c, %.o, $(MY_SRCS))
 
 all:
 
+	-mkdir src
+
 	make -C $(KDIR) M=$(PWD) modules
 
 	-rm *.mod.c
