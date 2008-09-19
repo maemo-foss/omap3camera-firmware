@@ -13,8 +13,6 @@ export MY_OBJS := $(patsubst %.c, %.o, $(MY_SRCS))
 
 all:
 
-	-mkdir src
-
 	make -C $(KDIR) M=$(PWD) modules
 
 	-rm *.mod.c
@@ -27,7 +25,7 @@ all:
 	-(find -name "*.mod.*" | xargs rm)
 
 distclean: clean
-	-(cd src && find -name "*.c" | xargs rm)
+	-rm -r src
 
 clean:
 	-find -name "*.o" | xargs rm
