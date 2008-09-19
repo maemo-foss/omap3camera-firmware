@@ -118,20 +118,20 @@ sub generate_modelist {
 			if ($pass==2) {
 				if (!$modelist_width[$modenum]) {
 					$modelist_width[$modenum] = $l;
-					if (!($modelist_width[$modenum] =~ s/^.*_([0-9]+)x[0-9]+_.*$/$1/)) {
+					if (!($modelist_width[$modenum] =~ s/^.*?([0-9]+)x.*?$/$1/i)) {
 						$modelist_width[$modenum] = "0";
 					}
 				}
 				if (!$modelist_height[$modenum]) {
 					$modelist_height[$modenum] = $l;
-					if (!($modelist_height[$modenum] =~ s/^.*_[0-9]+x([0-9]+)_.*$/$1/)) {
+					if (!($modelist_height[$modenum] =~ s/^.*?x([0-9]+).*?$/$1/i)) {
 						$modelist_height[$modenum] = "0";
 					}
 				}
 				if (!$modelist_tpf_numerator[$modenum]) {
 					$modelist_tpf_numerator[$modenum] = 100;
 					$modelist_tpf_denominator[$modenum] = $l;
-					$modelist_tpf_denominator[$modenum] =~ s/^.*_([0-9\.]+)fps.*$/$1/;
+					$modelist_tpf_denominator[$modenum] =~ s/^.*?([0-9\.]+)fps.*$/$1/i;
 					$modelist_tpf_denominator[$modenum] *= 100;
 					if (($modelist_tpf_denominator[$modenum] % 100) == 0) {
 						$modelist_tpf_numerator[$modenum] /= 100;
@@ -144,10 +144,10 @@ sub generate_modelist {
 				if (!$modelist_pixel_format[$modenum]) {
 					$modelist_pixel_format[$modenum] = "V4L2_PIX_FMT_SGRBG10";
 				}
-				if ($l =~ /powerdown/) {
+				if ($l =~ /powerdown/i) {
 					$modelist_type[$modenum] = "SMIA_REGLIST_STANDBY";
 				}
-				if ($l =~ /poweron/) {
+				if ($l =~ /poweron/i || $l =~ /powerup/i) {
 					$modelist_type[$modenum] = "SMIA_REGLIST_POWERON";
 				}
 				$o = "\n";
