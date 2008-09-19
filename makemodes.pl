@@ -292,7 +292,6 @@ print($s);
 print("' by makemodes.pl. */\n\n" .
       "\n" .
       "#include <media/smiaregs.h>\n" .
-      "#include <linux/videodev2.h>\n" .
       "\n");
 generate_modelist(1);
 generate_modelist(2);
