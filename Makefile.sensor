@@ -1,6 +1,6 @@
 modes:
 	-mkdir src
 
-	./makemodes.pl ini/stingraytsb_v09.ini > src/et8ek8-0002.c
-	./makemodes.pl ini/stingraykmot_v06.ini > src/mt9p012-2802-10.c
-	./makemodes.pl ini/acmelitest_v02.ini > src/vs6555-00.c
+	./makemodes.pl -s et8ek8 ini/stingraytsb_v09.ini > src/et8ek8-0002.c
+	./makemodes.pl -s mt9p012 ini/stingraykmot_v06.ini > src/mt9p012-2802-10.c
+	./makemodes.pl -s vs6555 ini/acmelitest_v02.ini > src/vs6555-00.c

@@ -6,17 +6,18 @@ use Getopt::Std;
 my $name = "smia_meta_reglist";
 my $version = sprintf("%04d-%02d-%02d", $year+1900, $mon, $mday);
 my %options=();
-getopts("n:v:h",\%options);
+getopts("s:n:v:h",\%options);
 my $inifile = $ARGV[0];
 die "Need input filename\n" if !$inifile;
 if (defined $options{h}) {
 	print("Copyright (C) 2008 Nokia, author Tuukka Toivonen <tuukka.o.toivonen@nokia.com>\n");
 	print("Convert Scooby settings to SMIA sensor firmware format.\n");
-	print("Usage: makemodes.pl [-n name] [-v version string] <inputfile.ini>\n");
+	print("Usage: makemodes.pl [-n name] [-v version string] [-s sensor] <inputfile.ini>\n");
 	exit(0);
 }
-if (defined $options{n}) { $name = $options{n}; }
-if (defined $options{v}) { $version = $options{n}; }
+if (defined $options{n}) { $name    = $options{n}; }
+if (defined $options{v}) { $version = $options{v}; }
+if (defined $options{s}) { $sensor  = $options{s}; }
 
 $extclk = 9600000;
 @modelist_width = ();
@@ -36,6 +37,7 @@ $extclk = 9600000;
 @modelist_bayer = ();
 @modelist_blacklvl = ();
 @modelist_satlvl = ();
+@modelist_regs = ();
 
 sub flush {
 	if ($m != 0) {
@@ -78,12 +80,21 @@ sub generate_modelist {
 		}
 		$o =~ s/#.*$//;
 		/^ / && do {
-			if ($pass!=2) { next; }
-			my $c = substr($o,9);
-			$o = "		{ SMIA_REG_8BIT, 0x$a[1], 0x$a[2] },";
-			if (length($c)>0) {
-				$o .= "	/* " . $c . " */";
+			if ($pass==1) {
+				my $regs_ref = $modelist_regs[$modenum];
+				my %regs = %$regs_ref;
+				$regs{"0x$a[1]"} = hex("0x$a[2]");
+				$modelist_regs[$modenum] = \%regs;
+				next;
 			}
+			if ($pass==2) {
+				my $c = substr($o,9);
+				$o = "		{ SMIA_REG_8BIT, 0x$a[1], 0x$a[2] },";
+				if (length($c)>0) {
+					$o .= "	/* " . $c . " */";
+				}
+			}
+			next if ($pass==3);
 		};
 		/^S/ && do {
 			$modenum++;
@@ -93,6 +104,7 @@ sub generate_modelist {
 			my $c = $l;
 			$c =~ tr/\(\)@[A-Z]\/\.-/___[a-z]___/;
 			if ($pass==1) {
+				my %regs = ();
 				$modelist_width[$modenum] = 0;
 				$modelist_height[$modenum] = 0;
 				$modelist_window_origin_x[$modenum] = 0;
@@ -113,9 +125,16 @@ sub generate_modelist {
 				$modelist_bayer[$modenum] = 0;
 				$modelist_blacklvl[$modenum] = 0;
 				$modelist_satlvl[$modenum] = 0;
+				$modelist_regs[$modenum] = \%regs;
 				next;
 			}
 			if ($pass==2) {
+				my $regs_ref = $modelist_regs[$modenum];
+				my %regs = %$regs_ref;
+
+				$modelist_max_exp[$modenum] = sensor_max_exp(\%regs);
+				if (!$modelist_max_exp[$modenum]) { $modelist_max_exp[$modenum] = "0"; }
+
 				if (!$modelist_width[$modenum]) {
 					$modelist_width[$modenum] = $l;
 					if (!($modelist_width[$modenum] =~ s/^.*?([0-9]+)x.*?$/$1/i)) {
@@ -281,6 +300,8 @@ sub generate_modelist {
 	close($fh);
 
 }
+
+do "makemodes-$sensor.pl" or die "Unsupported sensor $sensor";
 
 $fmtspec = 0;
 
