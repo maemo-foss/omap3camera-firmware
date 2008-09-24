@@ -1,7 +1,9 @@
 export DESTDIR
 
+TARGET ?= /lib/firmware
+
 all:
 
 install:
-	echo $(DESTDIR)
-	cp *.smia_reglist $(DESTDIR)/lib/firmware/
+	mkdir -p $(DESTDIR)$(TARGET)
+	cp *.smia_reglist $(DESTDIR)$(TARGET)
