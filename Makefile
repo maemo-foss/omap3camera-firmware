@@ -6,4 +6,4 @@ all:
 
 install:
 	mkdir -p $(DESTDIR)$(TARGET)
-	cp *.smia_reglist $(DESTDIR)$(TARGET)
+	cp *.bin $(DESTDIR)$(TARGET)
