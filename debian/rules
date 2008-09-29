@@ -3,6 +3,8 @@
 
 #export DH_VERBOSE=1
 
+PACKAGE := $(shell dpkg-parsechangelog | awk '/Source/{print $$2}')
+
 build:
 
 clean:
@@ -16,7 +18,7 @@ install: build
 	dh_clean -k 
 	dh_installdirs
 
-	$(MAKE) DESTDIR=$(CURDIR)/debian/camera-firmware install
+	$(MAKE) DESTDIR=$(CURDIR)/debian/$(PACKAGE) install
 
 
 binary-arch: build install
