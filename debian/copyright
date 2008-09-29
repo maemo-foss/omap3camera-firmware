@@ -1,9 +1,30 @@
-This package was debianized by  <sakari.ailus@nokia.com> on
+This package was debianized by 
+
+
+
+ <sailus@kaali> on
 Tue,  9 Sep 2008 20:04:57 +0300.
 
-Copyright: UNKNOWN
+It was downloaded from <fill in http/ftp site>
 
-License: Propritary
+Upstream Author: <put author(s) name and email here>
 
-The Debian packaging is (C) 2008, <sakari.ailus@nokia.com>
-and is licensed under the GPL, see `/usr/share/common-licenses/GPL'.
+Copyright: <put the year(s) of the copyright, and the names of the
+            copyright holder(s) here>
+
+License:
+
+<Put the license of the package here>
+
+
+The Debian packaging is (C) 2008, 
+
+
+
+ <sailus@kaali> and
+is licensed under the GPL, see `/usr/share/common-licenses/GPL'.
+
+
+# Please also look if there are files or directories which have a
+# different copyright/license attached and list them here.
+
