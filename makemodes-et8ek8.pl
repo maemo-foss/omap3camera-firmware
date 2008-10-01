@@ -15,4 +15,18 @@ sub sensor_max_exp {
 	}
 }
 
+sub sensor_pixel_clock {
+	my $regsref = shift @_;
+	my %regs = %$regsref;
+
+	my $ckref_div = ($regs{"0x1238"} & 0xf) + 1;
+	my $ckvar_div = (($regs{"0x1238"} & 0x80) >> 7) | ($regs{"0x1239"} << 1);
+	my $vco_div = ($regs{"0x123A"} >> 4) + 1;
+	my $spck_div = ($regs{"0x123A"} & 0xf) + 1;
+	my $mrck_div = ($regs{"0x123B"} >> 4) + 1;
+	my $lvdsck_div = ($regs{"0x123B"} & 0xf) + 1;
+
+	return $ckvar_div;
+};
+
 1;
