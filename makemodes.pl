@@ -133,7 +133,7 @@ sub generate_modelist {
 				my %regs = %$regs_ref;
 
 				$modelist_max_exp[$modenum] = sensor_max_exp(\%regs);
-				if (!$modelist_max_exp[$modenum]) { $modelist_max_exp[$modenum] = "0"; }
+				$modelist_pixel_clock[$modenum] = sensor_pixel_clock(\%regs);
 
 				if (!$modelist_width[$modenum]) {
 					$modelist_width[$modenum] = $l;
@@ -301,7 +301,15 @@ sub generate_modelist {
 
 }
 
-do "makemodes-$sensor.pl" or die "Unsupported sensor $sensor";
+sub sensor_max_exp {
+	return 0;
+}
+
+sub sensor_pixel_clock {
+	return 0;
+}
+
+do "makemodes-$sensor.pl" or printf STDERR "warning: can't find makemodes-$sensor.pl\n";
 
 $fmtspec = 0;
 
