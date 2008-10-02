@@ -18,7 +18,7 @@ all:
 	-rm *.mod.c
 
 	for in in $(MY_OBJS); do \
-		out="`echo "$$in" | sed 's/.o$$/.smia_reglist/'`"; \
+		out="`echo "$$in" | sed 's/.o$$/.bin/'`"; \
 		$(CROSS_COMPILE)objcopy -O binary $$in $$out; \
 	done
 
