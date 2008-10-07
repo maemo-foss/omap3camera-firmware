@@ -13,20 +13,26 @@ sub sensor_max_exp {
 	if ($v_count > 0) {
 		return $v_count*24/(5 - $moni_mode) - 4;
 	}
+
+	return 0;
 }
 
 sub sensor_pixel_clock {
 	my $regsref = shift @_;
 	my %regs = %$regsref;
 
-	my $ckref_div = ($regs{"0x1238"} & 0xf) + 1;
+	my $ckref_div = $regs{"0x1238"} & 0xf;
 	my $ckvar_div = (($regs{"0x1238"} & 0x80) >> 7) | ($regs{"0x1239"} << 1);
-	my $vco_div = ($regs{"0x123A"} >> 4) + 1;
-	my $spck_div = ($regs{"0x123A"} & 0xf) + 1;
-	my $mrck_div = ($regs{"0x123B"} >> 4) + 1;
-	my $lvdsck_div = ($regs{"0x123B"} & 0xf) + 1;
+	my $vco_div = $regs{"0x123A"} >> 4;
+	my $spck_div = $regs{"0x123A"} & 0xf;
+	my $mrck_div = $regs{"0x123B"} >> 4;
+	my $lvdsck_div = $regs{"0x123B"} & 0xf;
 
-	return $ckvar_div;
+	my $vco = $extclk * $ckvar_div / 3;
+	my $ccp2 = $vco / (($lvdsck_div + 1) * ($vco_div + 1));
+	my $spck = $vco / (($spck_div + 1) * ($vco_div + 1));
+	
+	return $spck + 0;
 };
 
 1;
