@@ -39,6 +39,11 @@ $extclk = 9600000;
 @modelist_satlvl = ();
 @modelist_regs = ();
 
+sub round {
+	my $val = shift(@_);
+	return int($val + 0.5);
+}
+
 sub flush {
 	if ($m != 0) {
 		print("		{ SMIA_REG_TERM, 0, 0}\n" .
@@ -105,26 +110,27 @@ sub generate_modelist {
 			$c =~ tr/\(\)@[A-Z]\/\.-/___[a-z]___/;
 			if ($pass==1) {
 				my %regs = ();
-				$modelist_width[$modenum] = 0;
-				$modelist_height[$modenum] = 0;
-				$modelist_window_origin_x[$modenum] = 0;
-				$modelist_window_origin_y[$modenum] = 0;
-				$modelist_window_width[$modenum] = 0;
-				$modelist_window_height[$modenum] = 0;
-				$modelist_pixel_clock[$modenum] = 0;
-				$modelist_ext_clock[$modenum] = 0;
-				$modelist_tpf_numerator[$modenum] = 0;
-				$modelist_tpf_denominator[$modenum] = 0;
-				$modelist_max_exp[$modenum] = 0;
-				$modelist_max_gain[$modenum] = 0;
-				$modelist_pixel_format[$modenum] = $modelist_pixel_format[0];
-				if ($modelist_pixel_format[0]) {
+
+				# Here begins new mode: reset parameters
+				$modelist_width[$modenum] = undef;
+				$modelist_height[$modenum] = undef;
+				$modelist_window_origin_x[$modenum] = undef;
+				$modelist_window_origin_y[$modenum] = undef;
+				$modelist_window_width[$modenum] = undef;
+				$modelist_window_height[$modenum] = undef;
+				$modelist_pixel_clock[$modenum] = undef;
+				$modelist_ext_clock[$modenum] = $extclk;
+				$modelist_tpf_numerator[$modenum] = undef;
+				$modelist_tpf_denominator[$modenum] = undef;
+				$modelist_max_exp[$modenum] = undef;
+				$modelist_max_gain[$modenum] = undef;
+				if (defined($modelist_pixel_format[0])) {
 					$modelist_pixel_format[$modenum] = $modelist_pixel_format[0];
 				}
 				$modelist_type[$modenum] = "SMIA_REGLIST_MODE";
-				$modelist_bayer[$modenum] = 0;
-				$modelist_blacklvl[$modenum] = 0;
-				$modelist_satlvl[$modenum] = 0;
+				$modelist_bayer[$modenum] = undef;
+				$modelist_blacklvl[$modenum] = undef;
+				$modelist_satlvl[$modenum] = undef;
 				$modelist_regs[$modenum] = \%regs;
 				next;
 			}
@@ -132,22 +138,23 @@ sub generate_modelist {
 				my $regs_ref = $modelist_regs[$modenum];
 				my %regs = %$regs_ref;
 
-				$modelist_max_exp[$modenum] = sensor_max_exp(\%regs);
-				$modelist_pixel_clock[$modenum] = sensor_pixel_clock(\%regs);
+				# At this point the parameters might already be partially
+				# initialized from the first pass. Those which are not, are undefined.
 
-				if (!$modelist_width[$modenum]) {
-					$modelist_width[$modenum] = $l;
-					if (!($modelist_width[$modenum] =~ s/^.*?([0-9]+)x.*?$/$1/i)) {
-						$modelist_width[$modenum] = "0";
+				# Try to first deduce parameters heuristically: unreliable, incomplete
+				if (!defined($modelist_window_width[$modenum])) {
+					$modelist_window_width[$modenum] = $l;
+					if (!($modelist_window_width[$modenum] =~ s/^.*?([0-9]+)x.*?$/$1/i)) {
+						$modelist_window_width[$modenum] = "0";
 					}
 				}
-				if (!$modelist_height[$modenum]) {
-					$modelist_height[$modenum] = $l;
-					if (!($modelist_height[$modenum] =~ s/^.*?x([0-9]+).*?$/$1/i)) {
-						$modelist_height[$modenum] = "0";
+				if (!defined($modelist_window_height[$modenum])) {
+					$modelist_window_height[$modenum] = $l;
+					if (!($modelist_window_height[$modenum] =~ s/^.*?x([0-9]+).*?$/$1/i)) {
+						$modelist_window_height[$modenum] = "0";
 					}
 				}
-				if (!$modelist_tpf_numerator[$modenum]) {
+				if (!defined($modelist_tpf_numerator[$modenum])) {
 					$modelist_tpf_numerator[$modenum] = 100;
 					$modelist_tpf_denominator[$modenum] = $l;
 					$modelist_tpf_denominator[$modenum] =~ s/^.*?([0-9\.]+)fps.*$/$1/i;
@@ -157,6 +164,8 @@ sub generate_modelist {
 						$modelist_tpf_denominator[$modenum] /= 100;
 					}
 				}
+
+				# These are more reliably deduced here than in the first pass, so these may overwrite the old values
 				if ($l =~ /DPCM10/i) {
 					$modelist_pixel_format[$modenum] = "V4L2_PIX_FMT_SGRBG10DPCM8";
 				}
@@ -169,6 +178,37 @@ sub generate_modelist {
 				if ($l =~ /poweron/i || $l =~ /powerup/i) {
 					$modelist_type[$modenum] = "SMIA_REGLIST_POWERON";
 				}
+
+				# Then try actual sensor-specific code: reliable but might not be implemented
+				$modelist_width[$modenum]           = sensor_width(\%regs)              if (defined(sensor_width(\%regs)));
+				$modelist_height[$modenum]          = sensor_height(\%regs)             if (defined(sensor_height(\%regs)));
+				$modelist_window_origin_x[$modenum] = sensor_window_origin_x(\%regs)    if (defined(sensor_window_origin_x(\%regs)));
+				$modelist_window_origin_y[$modenum] = sensor_window_origin_y(\%regs)    if (defined(sensor_window_origin_y(\%regs)));
+				$modelist_window_width[$modenum]    = sensor_window_width(\%regs)       if (defined(sensor_window_width(\%regs)));
+				$modelist_window_height[$modenum]   = sensor_window_height(\%regs)      if (defined(sensor_window_height(\%regs)));
+				$modelist_pixel_clock[$modenum]     = round(sensor_pixel_clock(\%regs)) if (defined(sensor_pixel_clock(\%regs)));
+				if (defined(sensor_fps(\%regs))) {
+					$modelist_denominator[$modenum] = round(sensor_fps(\%regs)*100);
+					$modelist_numerator[$modenum]   = 100;
+				}
+				$modelist_max_exp[$modenum]         = sensor_max_exp(\%regs)         if (defined(sensor_max_exp(\%regs)));
+				$modelist_pixel_format[$modenum]    = sensor_pixel_format(\%regs)    if (defined(sensor_pixel_format(\%regs)));
+
+				# If everything else fails, just set to plain wrong zero
+				$modelist_width[$modenum]           = 0 if (!defined($modelist_width[$modenum]));
+				$modelist_height[$modenum]          = 0 if (!defined($modelist_height[$modenum]));
+				$modelist_window_origin_x[$modenum] = 0 if (!defined($modelist_window_origin_x[$modenum]));
+				$modelist_window_origin_y[$modenum] = 0 if (!defined($modelist_window_origin_y[$modenum]));
+				$modelist_window_width[$modenum]    = 0 if (!defined($modelist_window_width[$modenum]));
+				$modelist_window_height[$modenum]   = 0 if (!defined($modelist_window_height[$modenum]));
+				$modelist_pixel_clock[$modenum]     = 0 if (!defined($modelist_pixel_clock[$modenum]));
+				$modelist_denominator[$modenum]     = 0 if (!defined($modelist_denominator[$modenum]));
+				$modelist_numerator[$modenum]       = 0 if (!defined($modelist_numerator[$modenum]));
+				$modelist_max_exp[$modenum]         = 0 if (!defined($modelist_max_exp[$modenum]));
+				$modelist_max_gain[$modenum]        = 0 if (!defined($modelist_max_[$modenum]));
+				$modelist_pixel_format[$modenum]    = 0 if (!defined($modelist_pixel_format[$modenum]));
+
+				# Finally output the parameters into the C structure
 				$o = "\n";
 				$o .= "/* " . $l . " */\n";
 				$o .= "static struct smia_reglist $c = {	/* $modenum */\n";
@@ -181,7 +221,7 @@ sub generate_modelist {
 				      "		.window_width = $modelist_window_width[$modenum],\n" .
 				      "		.window_height = $modelist_window_height[$modenum],\n" .
 				      "		.pixel_clock = $modelist_pixel_clock[$modenum],\n" .
-				      "		.ext_clock = $extclk,\n" .
+				      "		.ext_clock = $modelist_ext_clock[$modenum],\n" .
 				      "		.timeperframe = {\n" .
 				      "			.numerator = $modelist_tpf_numerator[$modenum],\n" .
 				      "			.denominator = $modelist_tpf_denominator[$modenum]\n" .
@@ -201,8 +241,8 @@ sub generate_modelist {
 				$n = $o;
 				$n =~ s/^F[\t ]+[a-zA-Z]+[\t ]+([0-9]+)[\t ].*$/$1/;
 				#if ($o =~ /^F[\t ]*imageFormat/) { }
-				if ($o =~ /^F[\t ]*imageWidth/)  { $modelist_width[$modenum]     = $n; }
-				if ($o =~ /^F[\t ]*imageHeight/) { $modelist_height[$modenum]    = $n; }
+				if ($o =~ /^F[\t ]*imageWidth/)  { $modelist_window_width[$modenum]  = $n; }
+				if ($o =~ /^F[\t ]*imageHeight/) { $modelist_window_height[$modenum] = $n; }
 				if ($o =~ /^F[\t ]*etMax/)       { $modelist_max_exp[$modenum]   = $n; }
 				if ($o =~ /^F[\t ]*agMax/)       { $modelist_max_gain[$modenum]  = $n; }
 				next;
@@ -301,15 +341,58 @@ sub generate_modelist {
 
 }
 
-sub sensor_max_exp {
-	return 0;
+# These functions take register hash as input
+# and return the corresponding value as output.
+# If the value can not be computed, return undef.
+
+# Return complete sensor readout area, including blanking
+sub sensor_width {
+	return undef;
 }
 
+sub sensor_height {
+	return undef;
+}
+
+# Return the upper-left origin of the active image area containing exposed pixels
+sub sensor_window_origin_x {
+	return undef;
+}
+
+sub sensor_window_origin_y {
+	return undef;
+}
+
+# Return the size of the active image area
+sub sensor_window_width {
+	return undef;
+}
+
+sub sensor_window_height {
+	return undef;
+}
+
+# Return pixel clock [Hz], ie. pixels per second
 sub sensor_pixel_clock {
-	return 0;
+	return undef;
 }
 
-do "makemodes-$sensor.pl" or printf STDERR "warning: can't find makemodes-$sensor.pl\n";
+# Return frames per second [Hz]
+sub sensor_fps {
+	return undef;
+}
+
+# Return maximum exposure value (FIXME: which units here?)
+sub sensor_max_exp {
+	return undef;
+}
+
+# Return V4L2_PIX_FMT_xxx as a string
+sub sensor_pixel_format {
+	return undef;
+}
+
+do "makemodes-$sensor.pl" or printf STDERR "warning: invalid makemodes-$sensor.pl\n";
 
 $fmtspec = 0;
 

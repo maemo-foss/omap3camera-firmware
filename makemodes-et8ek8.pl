@@ -14,7 +14,7 @@ sub sensor_max_exp {
 		return $v_count*24/(5 - $moni_mode) - 4;
 	}
 
-	return 0;
+	return undef;
 }
 
 sub sensor_pixel_clock {
