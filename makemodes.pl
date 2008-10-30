@@ -188,8 +188,8 @@ sub generate_modelist {
 				$modelist_window_height[$modenum]   = sensor_window_height(\%regs)      if (defined(sensor_window_height(\%regs)));
 				$modelist_pixel_clock[$modenum]     = round(sensor_pixel_clock(\%regs)) if (defined(sensor_pixel_clock(\%regs)));
 				if (defined(sensor_fps(\%regs))) {
-					$modelist_denominator[$modenum] = round(sensor_fps(\%regs)*100);
-					$modelist_numerator[$modenum]   = 100;
+					$modelist_tpf_denominator[$modenum] = round(sensor_fps(\%regs)*100);
+					$modelist_tpf_numerator[$modenum]   = 100;
 				}
 				$modelist_max_exp[$modenum]         = sensor_max_exp(\%regs)         if (defined(sensor_max_exp(\%regs)));
 				$modelist_pixel_format[$modenum]    = sensor_pixel_format(\%regs)    if (defined(sensor_pixel_format(\%regs)));
@@ -202,8 +202,8 @@ sub generate_modelist {
 				$modelist_window_width[$modenum]    = 0 if (!defined($modelist_window_width[$modenum]));
 				$modelist_window_height[$modenum]   = 0 if (!defined($modelist_window_height[$modenum]));
 				$modelist_pixel_clock[$modenum]     = 0 if (!defined($modelist_pixel_clock[$modenum]));
-				$modelist_denominator[$modenum]     = 0 if (!defined($modelist_denominator[$modenum]));
-				$modelist_numerator[$modenum]       = 0 if (!defined($modelist_numerator[$modenum]));
+				$modelist_tpf_denominator[$modenum] = 0 if (!defined($modelist_tpf_denominator[$modenum]));
+				$modelist_tpf_numerator[$modenum]   = 0 if (!defined($modelist_tpf_numerator[$modenum]));
 				$modelist_max_exp[$modenum]         = 0 if (!defined($modelist_max_exp[$modenum]));
 				$modelist_max_gain[$modenum]        = 0 if (!defined($modelist_max_[$modenum]));
 				$modelist_pixel_format[$modenum]    = 0 if (!defined($modelist_pixel_format[$modenum]));
