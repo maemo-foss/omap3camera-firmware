@@ -63,4 +63,12 @@ sub sensor_height {
 	return $v_count * 24 * $binning * $cropping;
 }
 
+sub sensor_fps {
+	my $pixels = sensor_width(@_) * sensor_height(@_);
+	my $spck = sensor_pixel_clock(@_);
+
+	return $spck / $pixels if ($pixels > 0);
+	return undef();
+}
+
 1;
