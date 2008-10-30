@@ -1,3 +1,9 @@
+camera-firmware (0.0.5) unstable; urgency=low
+
+  * Use windows instead.
+
+ -- Sakari Ailus <sakari.ailus@nokia.com>  Thu, 30 Oct 2008 11:22:11 +0200
+
 camera-firmware (0.0.4) unstable; urgency=low
 
   * Calculate pixel clock for et8ek8.
