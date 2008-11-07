@@ -1,6 +1,7 @@
 camera-firmware (0.0.5) unstable; urgency=low
 
   * Use windows instead.
+  * Set architecture arm only.
 
  -- Sakari Ailus <sakari.ailus@nokia.com>  Thu, 30 Oct 2008 11:22:11 +0200
 
