@@ -19,7 +19,7 @@ if (defined $options{n}) { $name    = $options{n}; }
 if (defined $options{v}) { $version = $options{v}; }
 if (defined $options{s}) { $sensor  = $options{s}; }
 
-$extclk = 9600000;
+$extclk = 9600000;		# Global clock frequency, used if no mode-specific clock given
 @modelist_width = ();
 @modelist_height = ();
 @modelist_window_origin_x = ();
@@ -298,8 +298,12 @@ sub generate_modelist {
 			if ($extclk_div == 6) { $div = 12; }
 			if ($extclk_div == 7) { $div = 14; }
 			die "bad extclk divisor $extclk_div" if ($div==-1);
-			$extclk = int($src*1000000 / $div + 0.5);
-			#$o = "#define CAMERA_XCLK_HZ " . $extclk . "	/*	" . substr($o,2) . "	*/";
+			my $clk = int($src*1000000 / $div + 0.5);
+			if ($modenum > 0) {
+				$modelist_ext_clock[$modenum] = $clk;
+			} else {
+				$extclk = $clk;
+			}
 			next;
 		};
 		/^D/ && do {
