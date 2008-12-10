@@ -38,6 +38,7 @@ $extclk = 9600000;
 @modelist_blacklvl = ();
 @modelist_satlvl = ();
 @modelist_regs = ();
+$poweron_mode = undef();
 
 sub round {
 	my $val = shift(@_);
@@ -132,6 +133,11 @@ sub generate_modelist {
 				$modelist_blacklvl[$modenum] = undef;
 				$modelist_satlvl[$modenum] = undef;
 				$modelist_regs[$modenum] = \%regs;
+
+				# This has to be found in the first pass
+				if ($l =~ /poweron/i || $l =~ /powerup/i) {
+					$poweron_mode = $modenum;
+				}
 				next;
 			}
 			if ($pass==2) {
@@ -140,6 +146,17 @@ sub generate_modelist {
 
 				# At this point the parameters might already be partially
 				# initialized from the first pass. Those which are not, are undefined.
+
+				# Merge powerup registers with the current mode registers
+				if (defined($poweron_mode)) {
+					my $regs_ref = $modelist_regs[$poweron_mode];
+					my %pregs = %$regs_ref;
+					foreach my $reg (keys %pregs) {
+						if (!defined($regs{$reg})) {
+							$regs{$reg} = $pregs{$reg};
+						}
+					}
+				}
 
 				# Try to first deduce parameters heuristically: unreliable, incomplete
 				if (!defined($modelist_window_width[$modenum])) {
