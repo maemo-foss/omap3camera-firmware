@@ -17,7 +17,7 @@ sub sensor_pixel_clock {
 	return undef if (!$vt_sys_clk_div);
 	return undef if (!$vt_pix_clk_div);
 
-	my $vt_pix_clk_freq = ($extclk * $pll_multipler)
+	my $vt_pix_clk_freq = ($modelist_ext_clock[$modenum] * $pll_multipler)
 	                      / ($pre_pll_clk_div * $vt_sys_clk_div * $vt_pix_clk_div);
 	return $vt_pix_clk_freq;
 }

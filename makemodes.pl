@@ -19,6 +19,7 @@ if (defined $options{n}) { $name    = $options{n}; }
 if (defined $options{v}) { $version = $options{v}; }
 if (defined $options{s}) { $sensor  = $options{s}; }
 
+$modenum = 0;
 $extclk = 9600000;		# Global clock frequency, used if no mode-specific clock given
 @modelist_width = ();
 @modelist_height = ();
@@ -56,8 +57,8 @@ sub flush {
 
 sub generate_modelist {
 	my $pass = shift(@_);
-	my $modenum = 0;
 	my $incomment = 0;	# 0=no any comment yet, 1=some comments done, 2=currently in comment
+	$modenum = 0;
 	$m = 0;
 
 	open(my $fh, "<", $inifile) or die("can not open input file\n");

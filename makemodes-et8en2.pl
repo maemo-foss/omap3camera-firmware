@@ -23,7 +23,7 @@ sub sensor_pixel_clock {
 		return 0;
 	}
 
-	my $pll_op_freq = ($extclk / $prepll_div) * $pll_mul;
+	my $pll_op_freq = ($modelist_ext_clock[$modenum] / $prepll_div) * $pll_mul;
 	my $vtpixclk = $pll_op_freq / ($vtsysclk_div * $vtpixclk_div);
 
 	return $vtpixclk;
@@ -41,7 +41,7 @@ sub sensor_opsys_clock {
 		return 0;
 	}
 
-	my $pll_op_freq = ($extclk / $prepll_div) * $pll_mul;
+	my $pll_op_freq = ($modelist_ext_clock[$modenum] / $prepll_div) * $pll_mul;
 	my $opsysclk = $pll_op_freq / $opsysclk_div;
 
 	return $opsysclk;
