@@ -43,6 +43,7 @@ struct smia_mode {
 	struct v4l2_fract timeperframe;
 	__u32 max_exp;			/* Maximum exposure value */
 	__u32 pixel_format;		/* V4L2_PIX_FMT_xxx */
+	__u32 sensitivity;		/* 16.16 fixed point */
 };
 
 #ifdef __KERNEL__
@@ -102,10 +103,13 @@ int smia_ctrl_find(struct v4l2_queryctrl *ctrls, size_t nctrls, int id);
 int smia_ctrl_find_next(struct v4l2_queryctrl *ctrls, size_t nctrls, int id);
 int smia_ctrl_query(struct v4l2_queryctrl *ctrls, size_t nctrls,
 		    struct v4l2_queryctrl *a);
+int smia_mode_query(const __u32 *ctrls, size_t nctrls, struct v4l2_queryctrl *a);
+int smia_mode_g_ctrl(const __u32 *ctrls, size_t nctrls, struct v4l2_control *vc,
+		     const struct smia_mode *sm);
 
 int smia_reglist_import(struct smia_meta_reglist *meta);
 struct smia_reglist *smia_reglist_find_type(struct smia_meta_reglist *meta,
-					   u16 type);
+					    u16 type);
 struct smia_reglist **smia_reglist_first(struct smia_meta_reglist *meta);
 struct smia_reglist *smia_reglist_find_mode_fmt(
 	struct smia_meta_reglist *meta,
