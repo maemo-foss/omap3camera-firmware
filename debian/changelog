@@ -1,3 +1,9 @@
+camera-firmware (0.0.8) unstable; urgency=low
+
+  * Sensitivity parameter added to struct smia_mode.
+
+ -- Sakari Ailus <sakari.ailus@nokia.com>  Fri, 19 Dec 2008 17:37:10 +0200
+
 camera-firmware (0.0.7) unstable; urgency=low
 
   * Updated register lists, pixel clock etc. changes.
