@@ -3,6 +3,54 @@
 # Usage:
 # $modelist_max_exp[$modenum] = sensor_max_exp(\%regs);
 
+sub et8ek8_hor_scaling {
+	my $regsref = shift @_;
+	my %regs = %$regsref;
+
+	my $h_intermit  = $regs{"0x121D"} & 0x07;
+	my $h_size      = ($regs{"0x121D"} >> 4) & 0x07;
+
+	my $binning;
+	$binning = 1/1 if ($h_intermit>=4);
+	$binning = 1/(5 - $h_intermit) if ($h_intermit>=1 && $h_intermit<=3);
+	$binning = 1/6 if ($h_intermit==0);
+
+	my $cropping;
+	$cropping = 1/1 if ($h_size>=6);
+	$cropping = 3/4 if ($h_size==5);
+	$cropping = 2/3 if ($h_size==4);
+	$cropping = 1/2 if ($h_size==3);
+	$cropping = 1/3 if ($h_size==2);
+	$cropping = 1/4 if ($h_size==1);
+	$cropping = 1/6 if ($h_size==0);
+
+	return $binning * $cropping;
+}
+
+sub et8ek8_ver_scaling {
+	my $regsref = shift @_;
+	my %regs = %$regsref;
+
+	my $moni_mode   = $regs{"0x121B"} & 0x07;
+	my $pic_size    = ($regs{"0x121B"} >> 4) & 0x07;
+
+	my $binning;
+	$binning = 1/1 if ($moni_mode>=4);
+	$binning = 1/(5 - $moni_mode) if ($moni_mode>=1 && $moni_mode<=3);
+	$binning = 1/6 if ($moni_mode==0);
+
+	my $cropping;
+	$cropping = 1/1 if ($pic_size>=6);
+	$cropping = 3/4 if ($pic_size==5);
+	$cropping = 2/3 if ($pic_size==4);
+	$cropping = 1/2 if ($pic_size==3);
+	$cropping = 1/3 if ($pic_size==2);
+	$cropping = 1/4 if ($pic_size==1);
+	$cropping = 1/6 if ($pic_size==0);
+
+	return $binning * $cropping;
+}
+
 sub sensor_max_exp {
 	return sensor_height(@_) - 4;
 }
@@ -37,30 +85,25 @@ sub sensor_width {
 }
 
 sub sensor_height {
+	my $scaling     = et8ek8_ver_scaling(@_);
+
 	my $regsref = shift @_;
 	my %regs = %$regsref;
 
 	my $v_count_lo  = $regs{"0x1222"};
 	my $v_count_hi  = $regs{"0x1223"} & 0x1F;
 	my $v_count     = ($v_count_hi<<8) | $v_count_lo;
-	my $moni_mode   = $regs{"0x121B"} & 0x07;
-	my $pic_size    = ($regs{"0x121B"} >> 4) & 0x07;
 
-	my $binning;
-	$binning = 1/1 if ($moni_mode>=4);
-	$binning = 1/(5 - $moni_mode) if ($moni_mode>=1 && $moni_mode<=3);
-	$binning = 1/6 if ($moni_mode==0);
+	return $v_count * 24 * $scaling;
+}
 
-	my $cropping;
-	$cropping = 1/1 if ($pic_size>=6);
-	$cropping = 3/4 if ($pic_size==5);
-	$cropping = 2/3 if ($pic_size==4);
-	$cropping = 1/2 if ($pic_size==3);
-	$cropping = 1/3 if ($pic_size==2);
-	$cropping = 1/4 if ($pic_size==1);
-	$cropping = 1/6 if ($pic_size==0);
+# Return the size of the visible image area
+sub sensor_window_width {
+	return 2592 * et8ek8_hor_scaling(@_);
+}
 
-	return $v_count * 24 * $binning * $cropping;
+sub sensor_window_height {
+	return 1968 * et8ek8_ver_scaling(@_);
 }
 
 sub sensor_fps {
