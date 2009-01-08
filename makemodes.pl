@@ -6,18 +6,30 @@ use Getopt::Std;
 my $name = "smia_meta_reglist";
 my $version = sprintf("%04d-%02d-%02d", $year+1900, $mon, $mday);
 my %options=();
-getopts("s:n:v:h",\%options);
+getopts("s:n:v:i:a:h",\%options);
 my $inifile = $ARGV[0];
+my %ignore_list = ();
+my %accept_list = ();
 die "Need input filename\n" if !$inifile;
 if (defined $options{h}) {
 	print("Copyright (C) 2008 Nokia, author Tuukka Toivonen <tuukka.o.toivonen@nokia.com>\n");
 	print("Convert Scooby settings to SMIA sensor firmware format.\n");
-	print("Usage: makemodes.pl [-n name] [-v version string] [-s sensor] <inputfile.ini>\n");
+	print("Usage: makemodes.pl [-n name] [-v version string] [-s sensor] [-i ignore,list] [-a accept,only] <inputfile.ini>\n");
 	exit(0);
 }
 if (defined $options{n}) { $name    = $options{n}; }
 if (defined $options{v}) { $version = $options{v}; }
 if (defined $options{s}) { $sensor  = $options{s}; }
+if (defined $options{i}) {
+	foreach my $x (split(',',$options{i})) {
+		$ignore_list{$x} = 1;
+	}
+}
+if (defined $options{a}) {
+	foreach my $x (split(',',$options{a})) {
+		$accept_list{$x} = 1;
+	}
+}
 
 $modenum = 0;
 $extclk = 9600000;		# Global clock frequency, used if no mode-specific clock given
@@ -47,11 +59,11 @@ sub round {
 }
 
 sub flush {
-	if ($m != 0) {
+	if ($skipmode != 0) {
 		print("		{ SMIA_REG_TERM, 0, 0}\n" .
 		      "	}\n" .
 		      "};\n");
-		$m = 0;
+		$skipmode = 0;
 	}
 }
 
@@ -59,7 +71,7 @@ sub generate_modelist {
 	my $pass = shift(@_);
 	my $incomment = 0;	# 0=no any comment yet, 1=some comments done, 2=currently in comment
 	$modenum = 0;
-	$m = 0;
+	$skipmode = 0;
 
 	open(my $fh, "<", $inifile) or die("can not open input file\n");
 	while (<$fh>) {
@@ -96,9 +108,12 @@ sub generate_modelist {
 			}
 			if ($pass==2) {
 				my $c = substr($o,9);
-				$o = "		{ SMIA_REG_8BIT, 0x$a[1], 0x$a[2] },";
-				if (length($c)>0) {
-					$o .= "	/* " . $c . " */";
+				$o = "";
+				if ($skipmode != 0) {
+					$o = "		{ SMIA_REG_8BIT, 0x$a[1], 0x$a[2] },";
+					if (length($c)>0) {
+						$o .= "	/* " . $c . " */";
+					}
 				}
 			}
 			next if ($pass==3);
@@ -106,7 +121,7 @@ sub generate_modelist {
 		/^S/ && do {
 			$modenum++;
 			flush() if ($pass==2);
-			$m = 1;
+			$skipmode = 1;
 			my $l = substr($o,2);
 			my $c = $l;
 			$c =~ tr/\(\)@[A-Z]\/\.-/___[a-z]___/;
@@ -253,6 +268,16 @@ sub generate_modelist {
 			if ($pass == 3) {
 				$o = "		{ .offset = (uintptr_t)&$c },";
 			}
+			if (scalar(%accept_list)) {
+				if (!defined($accept_list{$l})) {
+					$o = "\t\t/* Skipping mode `$l' */";
+					$skipmode = 0;
+				};
+			}
+			if (defined($ignore_list{$l})) {
+				$o = "\t\t/* Skipping mode `$l' */";
+				$skipmode = 0;
+			};
 		};
 		/^F/ && do {
 			if ($pass==1) {
@@ -309,7 +334,8 @@ sub generate_modelist {
 		};
 		/^D/ && do {
 			if ($pass!=2) { next; }
-			$o = "		{ SMIA_REG_DELAY, 0, $a[1] },";
+			$o = "";
+			$o = "		{ SMIA_REG_DELAY, 0, $a[1] }," if ($skipmode != 0);
 		};
 		/^N/ && do {
 			/^N[ \t]+CCM[ \t]+/i && do {		# Color sensitivity
@@ -356,7 +382,8 @@ sub generate_modelist {
 			$version = $o;
 			next;
 		};
-		print("$o\n");
+		print("$o");
+		print("\n") if ($o ne "");
 	}
 	flush() if ($pass==2);
 	close($fh);
