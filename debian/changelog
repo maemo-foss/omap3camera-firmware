@@ -1,3 +1,13 @@
+camera-firmware (0.0.9) unstable; urgency=low
+
+  * vs6555 and tcm8330md: disable modes requiring 13 MHz clock
+  * et8ek8: use new ini file, adds low fps modes
+  * add -a and -i arguments: allow skipping modes
+  * et8ek8: calculate visible window size (no need to guess anymore)
+  * tcm8330md: add ini file
+
+ -- Sakari Ailus <sakari.ailus@nokia.com>  Wed, 21 Jan 2009 14:04:32 +0200
+
 camera-firmware (0.0.8) unstable; urgency=low
 
   * Sensitivity parameter added to struct smia_mode.
