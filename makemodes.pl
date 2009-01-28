@@ -452,7 +452,7 @@ $s =~ s/^.+\///;
 print($s);
 print("' by makemodes.pl. */\n\n" .
       "\n" .
-      "#include \"../smiaregs.h\"\n" .
+      "#include <media/smiaregs.h>\n" .
       "\n");
 generate_modelist(1);
 generate_modelist(2);
