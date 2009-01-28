@@ -458,6 +458,7 @@ generate_modelist(1);
 generate_modelist(2);
 print("\n" .
       "struct smia_meta_reglist $name = {\n" .
+      "	.magic   = SMIA_MAGIC,\n" .
       "	.version = \"$version\",\n" .
       "	.reglist = {\n");
 generate_modelist(3);
