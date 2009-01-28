@@ -1,3 +1,10 @@
+camera-firmware (0.0.11) unstable; urgency=low
+
+  * smiaregs: add magic to firmware to identify it and its version
+  * use smiaregs.h from kernel
+
+ -- Sakari Ailus <sakari.ailus@nokia.com>  Wed, 28 Jan 2009 15:09:59 +0200
+
 camera-firmware (0.0.10) unstable; urgency=low
 
   * Now really apply the changes!
