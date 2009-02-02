@@ -1,0 +1,10 @@
+Source: dcc-pulautin
+Section: misc
+Priority: optional
+Maintainer: Sakari Ailus <sakari.ailus@nokia.com>
+Build-Depends: debhelper (>= 5.0.0)
+Standards-Version: 3.8.0
+
+Package: camera-firmware
+Architecture: any
+Description: Register list images for RX-51

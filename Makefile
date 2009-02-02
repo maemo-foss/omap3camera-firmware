@@ -3,6 +3,7 @@ $(error KDIR undefined!)
 endif
 
 CROSS_COMPILE ?= arm-linux-
+TARGET ?= /lib/firmware
 
 .PHONY: all
 
@@ -23,6 +24,12 @@ all:
 	done
 
 	-(find -name "*.mod.*" | xargs rm)
+
+install:
+	
+	mkdir -p $(DESTDIR)$(TARGET)
+	cp src/*.bin $(DESTDIR)$(TARGET)
+	                
 
 distclean: clean
 	-rm -r src
