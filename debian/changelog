@@ -1,3 +1,11 @@
+camera-firmware (0.0.12) unstable; urgency=low
+
+  * et8ek8: add Mode_648x492_5fps
+  * et8ek8: remove unused mode definitions
+  * et8ek8: copy stingraytsb_v14.ini to stingraytsb_v14_5fps.ini
+
+ -- Sakari Ailus <sakari.ailus@nokia.com>  Tue, 03 Feb 2009 16:27:47 +0200
+
 camera-firmware (0.0.11) unstable; urgency=low
 
   * smiaregs: add magic to firmware to identify it and its version
