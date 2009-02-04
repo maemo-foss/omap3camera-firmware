@@ -114,4 +114,22 @@ sub sensor_fps {
 	return undef();
 }
 
+# Return V4L2_PIX_FMT_xxx as a string
+sub sensor_pixel_format {
+	my $regsref = shift @_;
+	my %regs = %$regsref;
+
+	my $ccp_comp_mode = $regs{"0x125D"} & 0x07;
+
+	return "V4L2_PIX_FMT_SGRBG10"      if ($ccp_comp_mode == 0);
+	return "V4L2_PIX_FMT_SGRBG12"      if ($ccp_comp_mode == 1);
+	return "V4L2_PIX_FMT_SGRBG8"       if ($ccp_comp_mode == 2);
+	return "V4L2_PIX_FMT_SGRBG10DPCM8" if ($ccp_comp_mode == 3);
+	return "V4L2_PIX_FMT_SGRBG12DPCM8" if ($ccp_comp_mode == 4);
+	return "V4L2_PIX_FMT_SGRBG10DPCM6" if ($ccp_comp_mode == 5);
+	return "V4L2_PIX_FMT_SGRBG12DPCM6" if ($ccp_comp_mode == 6);
+
+	return undef;
+}
+
 1;
