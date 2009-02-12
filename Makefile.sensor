@@ -3,6 +3,6 @@ modes:
 
 	./makemodes.pl -s et8ek8 -i Mode1_poweron ini/stingraytsb_v14_5fps.ini > src/et8ek8-0002.c
 	./makemodes.pl -s mt9p012 ini/stingraykmot_v06.ini > src/mt9p012-2802-10.c
-	./makemodes.pl -s vs6555 -i Mode_648x488@15FPS_RAW10_13.0MHz,Mode_648x488@30FPS_RAW10_13.0MHz ini/acmelitest_v02.ini > src/vs6555-00.c
-	./makemodes.pl -s vs6555 -i Mode_648x488@15FPS_RAW10_13.0MHz,Mode_648x488@30FPS_RAW10_13.0MHz ini/acmelitest_v02.ini > src/vs6555-04.c
-	./makemodes.pl -s tcm8330md -i Mode_648x488@15FPS_RAW10_13.0MHz,Mode_648x488@30FPS_RAW10_13.0MHz ini/acmelitetsb_v02.ini > src/tcm8330md-208a-03.c
+	./makemodes.pl -s vs6555 -i Mode_648x488@15FPS_RAW10_13.0MHz,Mode_648x488@30FPS_RAW10_13.0MHz ini/acmelitest_v02.ini > src/smia-sensor-01-022b-00.c
+	./makemodes.pl -s vs6555 -i Mode_648x488@15FPS_RAW10_13.0MHz,Mode_648x488@30FPS_RAW10_13.0MHz ini/acmelitest_v02.ini > src/smia-sensor-01-022b-04.c
+	./makemodes.pl -s tcm8330md -i Mode_648x488@15FPS_RAW10_13.0MHz,Mode_648x488@30FPS_RAW10_13.0MHz ini/acmelitetsb_v02.ini > src/smia-sensor-0c-208a-03.c
