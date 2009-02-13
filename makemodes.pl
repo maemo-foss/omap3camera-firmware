@@ -33,6 +33,12 @@ if (defined $options{a}) {
 
 $modenum = 0;
 $extclk = 9600000;		# Global clock frequency, used if no mode-specific clock given
+@modelist_sensor_width = ();
+@modelist_sensor_height = ();
+@modelist_sensor_window_origin_x = ();
+@modelist_sensor_window_origin_y = ();
+@modelist_sensor_window_width = ();
+@modelist_sensor_window_height = ();
 @modelist_width = ();
 @modelist_height = ();
 @modelist_window_origin_x = ();
@@ -129,6 +135,12 @@ sub generate_modelist {
 				my %regs = ();
 
 				# Here begins new mode: reset parameters
+				$modelist_sensor_width[$modenum] = undef;
+				$modelist_sensor_height[$modenum] = undef;
+				$modelist_sensor_window_origin_x[$modenum] = undef;
+				$modelist_sensor_window_origin_y[$modenum] = undef;
+				$modelist_sensor_window_width[$modenum] = undef;
+				$modelist_sensor_window_height[$modenum] = undef;
 				$modelist_width[$modenum] = undef;
 				$modelist_height[$modenum] = undef;
 				$modelist_window_origin_x[$modenum] = undef;
@@ -213,6 +225,12 @@ sub generate_modelist {
 				}
 
 				# Then try actual sensor-specific code: reliable but might not be implemented
+				$modelist_sensor_width[$modenum]           = sensor_sensor_width(\%regs)              if (defined(sensor_sensor_width(\%regs)));
+				$modelist_sensor_height[$modenum]          = sensor_sensor_height(\%regs)             if (defined(sensor_sensor_height(\%regs)));
+				$modelist_sensor_window_origin_x[$modenum] = sensor_sensor_window_origin_x(\%regs)    if (defined(sensor_sensor_window_origin_x(\%regs)));
+				$modelist_sensor_window_origin_y[$modenum] = sensor_sensor_window_origin_y(\%regs)    if (defined(sensor_sensor_window_origin_y(\%regs)));
+				$modelist_sensor_window_width[$modenum]    = sensor_sensor_window_width(\%regs)       if (defined(sensor_sensor_window_width(\%regs)));
+				$modelist_sensor_window_height[$modenum]   = sensor_sensor_window_height(\%regs)      if (defined(sensor_sensor_window_height(\%regs)));
 				$modelist_width[$modenum]           = sensor_width(\%regs)              if (defined(sensor_width(\%regs)));
 				$modelist_height[$modenum]          = sensor_height(\%regs)             if (defined(sensor_height(\%regs)));
 				$modelist_window_origin_x[$modenum] = sensor_window_origin_x(\%regs)    if (defined(sensor_window_origin_x(\%regs)));
@@ -228,6 +246,12 @@ sub generate_modelist {
 				$modelist_pixel_format[$modenum]    = sensor_pixel_format(\%regs)    if (defined(sensor_pixel_format(\%regs)));
 
 				# If everything else fails, just set to plain wrong zero
+				$modelist_sensor_width[$modenum]           = 0 if (!defined($modelist_sensor_width[$modenum]));
+				$modelist_sensor_height[$modenum]          = 0 if (!defined($modelist_sensor_height[$modenum]));
+				$modelist_sensor_window_origin_x[$modenum] = 0 if (!defined($modelist_sensor_window_origin_x[$modenum]));
+				$modelist_sensor_window_origin_y[$modenum] = 0 if (!defined($modelist_sensor_window_origin_y[$modenum]));
+				$modelist_sensor_window_width[$modenum]    = 0 if (!defined($modelist_sensor_window_width[$modenum]));
+				$modelist_sensor_window_height[$modenum]   = 0 if (!defined($modelist_sensor_window_height[$modenum]));
 				$modelist_width[$modenum]           = 0 if (!defined($modelist_width[$modenum]));
 				$modelist_height[$modenum]          = 0 if (!defined($modelist_height[$modenum]));
 				$modelist_window_origin_x[$modenum] = 0 if (!defined($modelist_window_origin_x[$modenum]));
@@ -247,6 +271,12 @@ sub generate_modelist {
 				$o .= "static struct smia_reglist $c = {	/* $modenum */\n";
 				$o .= "	.type = $modelist_type[$modenum],\n";
 				$o .= "	.mode = {\n" .
+				      "		.sensor_width = $modelist_sensor_width[$modenum],\n" .
+				      "		.sensor_height = $modelist_sensor_height[$modenum],\n" .
+				      "		.sensor_window_origin_x = $modelist_sensor_window_origin_x[$modenum],\n" .
+				      "		.sensor_window_origin_y = $modelist_sensor_window_origin_y[$modenum],\n" .
+				      "		.sensor_window_width = $modelist_sensor_window_width[$modenum],\n" .
+				      "		.sensor_window_height = $modelist_sensor_window_height[$modenum],\n" .
 				      "		.width = $modelist_width[$modenum],\n" .
 				      "		.height = $modelist_height[$modenum],\n" .
 				      "		.window_origin_x = $modelist_window_origin_x[$modenum],\n" .
@@ -393,6 +423,32 @@ sub generate_modelist {
 # These functions take register hash as input
 # and return the corresponding value as output.
 # If the value can not be computed, return undef.
+
+sub sensor_sensor_width {
+	return undef;
+}
+
+sub sensor_sensor_height {
+	return undef;
+}
+
+# Return the upper-left origin of the active image area containing exposed pixels
+sub sensor_sensor_window_origin_x {
+	return undef;
+}
+
+sub sensor_sensor_window_origin_y {
+	return undef;
+}
+
+# Return the size of the active image area
+sub sensor_sensor_window_width {
+	return undef;
+}
+
+sub sensor_sensor_window_height {
+	return undef;
+}
 
 # Return complete sensor readout area, including blanking
 sub sensor_width {
