@@ -1,5 +1,30 @@
 # Sensor specific code: vs6555
 
+sub sensor_sensor_width {
+	return 648;
+}
+
+sub sensor_sensor_height {
+	return 488;
+}
+
+# FIXME: vs6555 cropping/scaling not yet supported
+sub sensor_sensor_window_origin_x {
+	return 0;
+}
+
+sub sensor_sensor_window_origin_y {
+	return 0;
+}
+
+sub sensor_sensor_window_width {
+	return sensor_sensor_width(@_);
+}
+
+sub sensor_sensor_window_height {
+	return sensor_sensor_height(@_);
+}
+
 sub sensor_max_exp {
 	return sensor_height(@_) - 3;
 }
