@@ -5,6 +5,7 @@ camera-firmware (0.0.13) unstable; urgency=low
   * et8ek8: add calculation of mode cropping
   * add support for physical sensor image window information
   * update firmware file names for generic smia-sensor driver
+  * et8ek8: Really don't use Mode2_16VGA_2592x1968_12.07fps
 
  -- Sakari Ailus <sailus@kaali.localdomain>  Fri, 13 Feb 2009 13:33:33 +0200
 
