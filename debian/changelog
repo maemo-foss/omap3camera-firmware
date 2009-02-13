@@ -1,3 +1,13 @@
+camera-firmware (0.0.13) unstable; urgency=low
+
+  * tcm8330md: add sensor-specific code
+  * vs6555: return sensor physical size
+  * et8ek8: add calculation of mode cropping
+  * add support for physical sensor image window information
+  * update firmware file names for generic smia-sensor driver
+
+ -- Sakari Ailus <sailus@kaali.localdomain>  Fri, 13 Feb 2009 13:33:33 +0200
+
 camera-firmware (0.0.12) unstable; urgency=low
 
   * et8ek8: add Mode_648x492_5fps
