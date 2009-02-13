@@ -3,18 +3,40 @@
 # Usage:
 # $modelist_max_exp[$modenum] = sensor_max_exp(\%regs);
 
-sub et8ek8_hor_scaling {
+sub sensor_sensor_width {
+	return 2592;
+}
+
+sub sensor_sensor_height {
 	my $regsref = shift @_;
 	my %regs = %$regsref;
+	my $dummy_data = $regs{"0x125E"} & (1<<5);
+	return 1966 if ($dummy_data);
+	return 1968 if (!$dummy_data);
+}
 
-	my $h_intermit  = $regs{"0x121D"} & 0x07;
-	my $h_size      = ($regs{"0x121D"} >> 4) & 0x07;
+sub sensor_sensor_window_origin_x {
+	my $w = et8ek8_hor_cropping(@_) * sensor_sensor_width(@_);
+	return int((sensor_sensor_width(@_) - $w)/2);
+}
 
-	my $binning;
-	$binning = 1/1 if ($h_intermit>=4);
-	$binning = 1/(5 - $h_intermit) if ($h_intermit>=1 && $h_intermit<=3);
-	$binning = 1/6 if ($h_intermit==0);
+sub sensor_sensor_window_origin_y {
+	my $h = et8ek8_ver_cropping(@_) * sensor_sensor_height(@_);
+	return int((sensor_sensor_height(@_) - $h)/2);
+}
 
+sub sensor_sensor_window_width {
+	return int(et8ek8_hor_cropping(@_) * sensor_sensor_width(@_));
+}
+
+sub sensor_sensor_window_height {
+	return int(et8ek8_ver_cropping(@_) * sensor_sensor_height(@_));
+}
+
+sub et8ek8_hor_cropping {
+	my $regsref = shift @_;
+	my %regs = %$regsref;
+	my $h_size = ($regs{"0x121D"} >> 4) & 0x07;
 	my $cropping;
 	$cropping = 1/1 if ($h_size>=6);
 	$cropping = 3/4 if ($h_size==5);
@@ -23,22 +45,27 @@ sub et8ek8_hor_scaling {
 	$cropping = 1/3 if ($h_size==2);
 	$cropping = 1/4 if ($h_size==1);
 	$cropping = 1/6 if ($h_size==0);
+	return $cropping;
+}
+
+sub et8ek8_hor_scaling {
+	my $cropping = et8ek8_hor_cropping(@_);
+	my $regsref = shift @_;
+	my %regs = %$regsref;
+
+	my $h_intermit  = $regs{"0x121D"} & 0x07;
+	my $binning;
+	$binning = 1/1 if ($h_intermit>=4);
+	$binning = 1/(5 - $h_intermit) if ($h_intermit>=1 && $h_intermit<=3);
+	$binning = 1/6 if ($h_intermit==0);
 
 	return $binning * $cropping;
 }
 
-sub et8ek8_ver_scaling {
+sub et8ek8_ver_cropping {
 	my $regsref = shift @_;
 	my %regs = %$regsref;
-
-	my $moni_mode   = $regs{"0x121B"} & 0x07;
-	my $pic_size    = ($regs{"0x121B"} >> 4) & 0x07;
-
-	my $binning;
-	$binning = 1/1 if ($moni_mode>=4);
-	$binning = 1/(5 - $moni_mode) if ($moni_mode>=1 && $moni_mode<=3);
-	$binning = 1/6 if ($moni_mode==0);
-
+	my $pic_size = ($regs{"0x121B"} >> 4) & 0x07;
 	my $cropping;
 	$cropping = 1/1 if ($pic_size>=6);
 	$cropping = 3/4 if ($pic_size==5);
@@ -47,6 +74,19 @@ sub et8ek8_ver_scaling {
 	$cropping = 1/3 if ($pic_size==2);
 	$cropping = 1/4 if ($pic_size==1);
 	$cropping = 1/6 if ($pic_size==0);
+	return $cropping;
+}
+
+sub et8ek8_ver_scaling {
+	my $cropping = et8ek8_ver_cropping(@_);
+	my $regsref = shift @_;
+	my %regs = %$regsref;
+
+	my $moni_mode   = $regs{"0x121B"} & 0x07;
+	my $binning;
+	$binning = 1/1 if ($moni_mode>=4);
+	$binning = 1/(5 - $moni_mode) if ($moni_mode>=1 && $moni_mode<=3);
+	$binning = 1/6 if ($moni_mode==0);
 
 	return $binning * $cropping;
 }
