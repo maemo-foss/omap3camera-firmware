@@ -106,7 +106,7 @@ sub sensor_pixel_clock {
 	my $mrck_div = $regs{"0x123B"} >> 4;
 	my $lvdsck_div = $regs{"0x123B"} & 0xf;
 
-	my $vco = $modelist_ext_clock[$modenum] * $ckvar_div / 3;
+	my $vco = $modelist_ext_clock[$modenum] * $ckvar_div / ($ckref_div + 1);
 	my $ccp2 = $vco / (($lvdsck_div + 1) * ($vco_div + 1));
 	my $spck = $vco / (($spck_div + 1) * ($vco_div + 1));
 	
