@@ -51,6 +51,7 @@ $extclk = 9600000;		# Global clock frequency, used if no mode-specific clock giv
 @modelist_tpf_denominator = ();
 @modelist_max_exp = ();
 @modelist_max_gain = ();
+@modelist_sensitivity = ();
 @modelist_pixel_format = ();
 @modelist_type = ();
 @modelist_bayer = ();
@@ -147,6 +148,7 @@ sub generate_modelist {
 				$modelist_window_origin_y[$modenum] = undef;
 				$modelist_window_width[$modenum] = undef;
 				$modelist_window_height[$modenum] = undef;
+				$modelist_sensitivity[$modenum] = undef;
 				$modelist_pixel_clock[$modenum] = undef;
 				$modelist_ext_clock[$modenum] = $extclk;
 				$modelist_tpf_numerator[$modenum] = undef;
@@ -231,6 +233,7 @@ sub generate_modelist {
 				$modelist_sensor_window_origin_y[$modenum] = sensor_sensor_window_origin_y(\%regs)    if (defined(sensor_sensor_window_origin_y(\%regs)));
 				$modelist_sensor_window_width[$modenum]    = sensor_sensor_window_width(\%regs)       if (defined(sensor_sensor_window_width(\%regs)));
 				$modelist_sensor_window_height[$modenum]   = sensor_sensor_window_height(\%regs)      if (defined(sensor_sensor_window_height(\%regs)));
+				$modelist_sensitivity[$modenum]            = sensor_sensor_sensitivity(\%regs)        if (defined(sensor_sensor_sensitivity(\%regs)));
 				$modelist_width[$modenum]           = sensor_width(\%regs)              if (defined(sensor_width(\%regs)));
 				$modelist_height[$modenum]          = sensor_height(\%regs)             if (defined(sensor_height(\%regs)));
 				$modelist_window_origin_x[$modenum] = sensor_window_origin_x(\%regs)    if (defined(sensor_window_origin_x(\%regs)));
@@ -258,6 +261,7 @@ sub generate_modelist {
 				$modelist_window_origin_y[$modenum] = 0 if (!defined($modelist_window_origin_y[$modenum]));
 				$modelist_window_width[$modenum]    = 0 if (!defined($modelist_window_width[$modenum]));
 				$modelist_window_height[$modenum]   = 0 if (!defined($modelist_window_height[$modenum]));
+				$modelist_sensitivity[$modenum]     = 0 if (!defined($modelist_sensitivity[$modenum]));
 				$modelist_pixel_clock[$modenum]     = 0 if (!defined($modelist_pixel_clock[$modenum]));
 				$modelist_tpf_denominator[$modenum] = 0 if (!defined($modelist_tpf_denominator[$modenum]));
 				$modelist_tpf_numerator[$modenum]   = 0 if (!defined($modelist_tpf_numerator[$modenum]));
@@ -291,7 +295,8 @@ sub generate_modelist {
 				      "		},\n" .
 				      "		.max_exp = $modelist_max_exp[$modenum],\n" .
 				      "		/* .max_gain = $modelist_max_gain[$modenum], */\n" .
-				      "		.pixel_format = $modelist_pixel_format[$modenum]\n" .
+				      "		.pixel_format = $modelist_pixel_format[$modenum],\n" .
+				      "		.sensitivity = $modelist_sensitivity[$modenum]\n" .
 				      "	},\n";
 				$o .= "	.regs = {";
 			}
@@ -448,6 +453,10 @@ sub sensor_sensor_window_width {
 
 sub sensor_sensor_window_height {
 	return undef;
+}
+
+sub sensor_sensor_sensitivity {
+	return 0x10000; # Default = 1.0 in 16.16 bit fixed point
 }
 
 # Return complete sensor readout area, including blanking
