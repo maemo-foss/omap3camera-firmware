@@ -1,3 +1,12 @@
+camera-firmware (0.0.14) unstable; urgency=low
+
+  * Fix sensitivity calculation
+  * et8ek8: fix calculation of vco
+  * et8ek8: Really don't use Mode2_16VGA_2592x1968_12.07fps
+  * et8ek8: Mode2_16VGA_2592x1968_12.07fps gives lsc prefetch errors.
+
+ -- Sakari Ailus <sakari.ailus@maxwell.research.nokia.com>  Mon, 09 Mar 2009 15:55:42 +0200
+
 camera-firmware (0.0.13) unstable; urgency=low
 
   * tcm8330md: add sensor-specific code
