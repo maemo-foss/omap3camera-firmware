@@ -1,3 +1,9 @@
+camera-firmware (0.0.16) unstable; urgency=low
+
+  * et8ek8: Do not use Mode_2x3_1296x656_29.9fps
+
+ -- Sakari Ailus <sakari.ailus@maxwell.research.nokia.com>  Mon, 23 Mar 2009 15:28:42 +0200
+
 camera-firmware (0.0.15) unstable; urgency=low
 
   * et8ek8: add Mode3_4VGA_1296x984_25fps
