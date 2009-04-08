@@ -1,3 +1,11 @@
+camera-firmware (0.0.17) unstable; urgency=low
+
+  * add -d option: ignore delays specified in ini-file
+  * et8ek8: ignore delays from ini-file
+  * et8ek8: do not enable streaming (driver should do it)
+
+ -- Sakari Ailus <sakari.ailus@maxwell.research.nokia.com>  Wed, 08 Apr 2009 17:41:59 +0300
+
 camera-firmware (0.0.16) unstable; urgency=low
 
   * et8ek8: Do not use Mode_2x3_1296x656_29.9fps
