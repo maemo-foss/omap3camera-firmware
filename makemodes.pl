@@ -6,15 +6,16 @@ use Getopt::Std;
 my $name = "smia_meta_reglist";
 my $version = sprintf("%04d-%02d-%02d", $year+1900, $mon, $mday);
 my %options=();
-getopts("s:n:v:i:a:h",\%options);
+getopts("s:n:v:i:a:dh",\%options) or die("Invalid option, use -h for help.\n");
 my $inifile = $ARGV[0];
 my %ignore_list = ();
 my %accept_list = ();
+my $delays = 1;
 die "Need input filename\n" if !$inifile;
 if (defined $options{h}) {
 	print("Copyright (C) 2008 Nokia, author Tuukka Toivonen <tuukka.o.toivonen@nokia.com>\n");
 	print("Convert Scooby settings to SMIA sensor firmware format.\n");
-	print("Usage: makemodes.pl [-n name] [-v version string] [-s sensor] [-i ignore,list] [-a accept,only] <inputfile.ini>\n");
+	print("Usage: makemodes.pl [-n name] [-v version string] [-s sensor] [-i ignore,list] [-a accept,only] [-d] <inputfile.ini>\n");
 	exit(0);
 }
 if (defined $options{n}) { $name    = $options{n}; }
@@ -30,6 +31,7 @@ if (defined $options{a}) {
 		$accept_list{$x} = 1;
 	}
 }
+if (defined $options{d}) { $delays = undef(); }
 
 $modenum = 0;
 $extclk = 9600000;		# Global clock frequency, used if no mode-specific clock given
@@ -370,7 +372,9 @@ sub generate_modelist {
 		/^D/ && do {
 			if ($pass!=2) { next; }
 			$o = "";
-			$o = "		{ SMIA_REG_DELAY, 0, $a[1] }," if ($skipmode != 0);
+			if (!$delays) { $o .= "/*"; }
+			$o .= "		{ SMIA_REG_DELAY, 0, $a[1] }," if ($skipmode != 0);
+			if (!$delays) { $o .= " */"; }
 		};
 		/^N/ && do {
 			/^N[ \t]+CCM[ \t]+/i && do {		# Color sensitivity
