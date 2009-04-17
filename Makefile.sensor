@@ -1,0 +1,8 @@
+modes:
+	-mkdir src
+
+	./makemodes.pl -d -s et8ek8 -i Mode1_poweron,Mode2_16VGA_2592x1968_12.07fps,Mode_2x3_1296x656_29.9fps ini/stingraytsb_v14_5fps.ini > src/et8ek8-0002.c
+	./makemodes.pl -s mt9p012 ini/stingraykmot_v06.ini > src/mt9p012-2802-10.c
+	./makemodes.pl -s vs6555 -i Mode_648x488@15FPS_RAW10_13.0MHz,Mode_648x488@30FPS_RAW10_13.0MHz ini/acmelitest_v02.ini > src/smia-sensor-01-022b-00.c
+	./makemodes.pl -s vs6555 -i Mode_648x488@15FPS_RAW10_13.0MHz,Mode_648x488@30FPS_RAW10_13.0MHz ini/acmelitest_v02.ini > src/smia-sensor-01-022b-04.c
+	./makemodes.pl -s tcm8330md -i Mode_648x488@15FPS_RAW10_13.0MHz,Mode_648x488@30FPS_RAW10_13.0MHz ini/acmelitetsb_v02.ini > src/smia-sensor-0c-208a-03.c
