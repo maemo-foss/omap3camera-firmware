@@ -9,14 +9,16 @@ FIXME into C code.
 
 dcc-pulautin is a Makefile (mostly) that converts sensor register lists
 as C code into binaries understandable to sensor drivers. The end
-result is a binary with sensor driver name, sensor version and
-smia_reglist suffix, for example et8ek8-0002.smia_reglist.
+result is a binary with sensor driver name, sensor version and bin
+suffix, for example et8ek8-0002.bin.
 
 Usually you don't need to do this since the images are included. To
 convert the register lists into C code:
 
-KDIR=/where/is/kernel make modes
+make modes
 
 To compile the register lists in C form into binaries:
 
-KDIR=/where/is/kernel make
+KDIR=/where/is/kernel make reglists
+
+The resulting binaries are under src, sample ones are located under bin.

@@ -1,6 +1,4 @@
-ifeq ($(KDIR), )
-$(error KDIR undefined!)
-endif
+KDIR ?= /usr/src/linux
 
 CROSS_COMPILE ?= arm-linux-
 TARGET ?= /lib/firmware
@@ -13,6 +11,8 @@ export MY_SRCS := $(wildcard src/*.c)
 export MY_OBJS := $(patsubst %.c, %.o, $(MY_SRCS))
 
 all:
+
+reglists:
 
 	make -C $(KDIR) M=$(PWD) modules
 
