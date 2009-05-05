@@ -1,3 +1,9 @@
+camera-firmware (0.0.19) unstable; urgency=low
+
+  * Install binaries from bin, not from src.
+
+ -- Sakari Ailus <sakari.ailus@maxwell.research.nokia.com>  Tue, 05 May 2009 14:49:13 +0300
+
 camera-firmware (0.0.18) unstable; urgency=low
 
   * Include dcc-pulautin source

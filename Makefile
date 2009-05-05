@@ -28,7 +28,7 @@ reglists:
 install:
 	
 	mkdir -p $(DESTDIR)$(TARGET)
-	cp src/*.bin $(DESTDIR)$(TARGET)
+	cp bin/*.bin $(DESTDIR)$(TARGET)
 	                
 
 distclean: clean
