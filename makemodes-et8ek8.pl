@@ -34,7 +34,8 @@ sub sensor_sensor_window_height {
 }
 
 sub sensor_sensor_sensitivity {
-	return et8ek8_sensitivity(@_);
+	# All modes with et8ek8 have same sensitivity 1.0
+	return 1 << 16;
 }
 
 sub et8ek8_hor_cropping {
@@ -97,25 +98,6 @@ sub et8ek8_ver_scaling {
 
 sub sensor_max_exp {
 	return sensor_height(@_) - 4;
-}
-
-sub et8ek8_sensitivity {
-	my $regsref = shift @_;
-	my %regs = %$regsref;
-
-	my $h_intermit  = $regs{"0x121D"} & 0x07;
-	my $hor_binning = 1;
-	$hor_binning = 1 if ($h_intermit>=4);
-	$hor_binning = (5 - $h_intermit) if ($h_intermit>=1 && $h_intermit<=3);
-	$hor_binning = 6 if ($h_intermit==0);
-
-	my $moni_mode   = $regs{"0x121B"} & 0x07;
-	my $vert_binning = 1;
-	$vert_binning = 1 if ($moni_mode>=4);
-	$vert_binning = (5 - $moni_mode) if ($moni_mode>=1 && $moni_mode<=3);
-	$vert_binning = 6 if ($moni_mode==0);
-
-	return ($hor_binning * $vert_binning) << 16;
 }
 
 sub sensor_pixel_clock {
