@@ -1,3 +1,10 @@
+camera-firmware (0.0.20) unstable; urgency=low
+
+  * et8ek8: fix sensitivity to 1.0
+  * mt9p012: add placeholder for sensor configuration file
+
+ -- Sakari Ailus <sakari.ailus@maxwell.research.nokia.com>  Fri, 15 May 2009 13:21:54 +0300
+
 camera-firmware (0.0.19) unstable; urgency=low
 
   * Install binaries from bin, not from src.
