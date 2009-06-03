@@ -1,3 +1,10 @@
+camera-firmware (0.0.21) unstable; urgency=low
+
+  * et8ek8: fix sensitivity to 1.0
+  * Fixes: NB#102261 - Widescreen (WVGA) video recording
+
+ -- Sakari Ailus <sakari.ailus@maxwell.research.nokia.com>  Wed, 03 Jun 2009 14:11:51 +0300
+
 camera-firmware (0.0.20) unstable; urgency=low
 
   * et8ek8: fix sensitivity to 1.0
