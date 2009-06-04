@@ -177,4 +177,44 @@ sub sensor_pixel_format {
 	return undef;
 }
 
+# Return C comment string describing the mode
+sub sensor_mode_comment {
+	my $regsref = shift @_;
+	my %regs = %$regsref;
+
+	my $v_count_lo  = $regs{"0x1222"};
+	my $v_count_hi  = $regs{"0x1223"} & 0x1F;
+	my $v_count     = ($v_count_hi<<8) | $v_count_lo;
+
+	my $h_count_lo  = $regs{"0x1220"};
+	my $h_count_hi  = $regs{"0x1221"} & 0x07;
+	my $h_count     = ($h_count_hi<<8) | $h_count_lo;
+
+	my $ckref_div = $regs{"0x1238"} & 0xf;
+	my $ckvar_div = (($regs{"0x1238"} & 0x80) >> 7) | ($regs{"0x1239"} << 1);
+	my $vco_div = $regs{"0x123A"} >> 4;
+	my $spck_div = $regs{"0x123A"} & 0xf;
+	my $mrck_div = $regs{"0x123B"} >> 4;
+	my $lvdsck_div = $regs{"0x123B"} & 0xf;
+
+	my $vco = $modelist_ext_clock[$modenum] * $ckvar_div / ($ckref_div + 1);
+	my $ccp2 = $vco / (($lvdsck_div + 1) * ($vco_div + 1));
+	my $spck = $vco / (($spck_div + 1) * ($vco_div + 1));
+
+	my $o = "/* (without the +1)\n";
+	$o .= " * SPCK       = " . $spck/1e6 . " MHz\n";
+	$o .= " * CCP2       = " . $ccp2/1e6 . " MHz\n";
+	$o .= " * VCO        = " . $vco/1e6 . " MHz\n";
+	$o .= " * VCOUNT     = " . $v_count . " (" . ($v_count*24) . ")\n";
+	$o .= " * HCOUNT     = " . $h_count . " (" . ($h_count*24) . ")\n";
+	$o .= " * CKREF_DIV  = " . $ckref_div . "\n";
+	$o .= " * CKVAR_DIV  = " . $ckvar_div . "\n";
+	$o .= " * VCO_DIV    = " . $vco_div . "\n";
+	$o .= " * SPCK_DIV   = " . $spck_div . "\n";
+	$o .= " * MRCK_DIV   = " . $mrck_div . "\n";
+	$o .= " * LVDSCK_DIV = " . $lvdsck_div . "\n";
+	$o .= " */\n";
+	return $o;
+}
+
 1;
