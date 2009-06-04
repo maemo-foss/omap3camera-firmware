@@ -275,6 +275,7 @@ sub generate_modelist {
 				$o = "\n";
 				$o .= "/* " . $l . " */\n";
 				$o .= "static struct smia_reglist $c = {	/* $modenum */\n";
+				$o .= sensor_mode_comment(\%regs);
 				$o .= "	.type = $modelist_type[$modenum],\n";
 				$o .= "	.mode = {\n" .
 				      "		.sensor_width = $modelist_sensor_width[$modenum],\n" .
@@ -508,6 +509,11 @@ sub sensor_max_exp {
 # Return V4L2_PIX_FMT_xxx as a string
 sub sensor_pixel_format {
 	return undef;
+}
+
+# Return C comment string describing the mode
+sub sensor_mode_comment {
+	return "";
 }
 
 do "makemodes-$sensor.pl" or printf STDERR "warning: invalid makemodes-$sensor.pl\n";
