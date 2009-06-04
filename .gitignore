@@ -1,0 +1,6 @@
+patches/*
+src/*
+.tmp_versions/*
+Module.symvers
+modules.order
+
