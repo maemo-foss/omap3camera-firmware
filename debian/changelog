@@ -1,3 +1,16 @@
+camera-firmware (0.0.22) unstable; urgency=low
+
+  * et8ek8: clean up sensor mode list, remove useless comments, etc.
+  * et8ek8: remove 15 fps modes as they are not used
+  * et8ek8: remove modes doing cropping, as those are not used
+  * et8ek8: remove unused modes from (copy of) mode settings list
+  * et8ek8: generate C comments showing the mode settings
+  * Allow sensor-specific code to inject comments to generated C files
+  * et8ek8: adjust Mode3_4VGA_1296x984_5fps to 24.9994 fps
+  * camera-firmware: Generate gitignore list
+    
+ -- Sakari Ailus <sakari.ailus@maxwell.research.nokia.com>  Wed, 22 Jul 2009 16:05:48 +0300
+
 camera-firmware (0.0.21) unstable; urgency=low
 
   * et8ek8: fix sensitivity to 1.0
