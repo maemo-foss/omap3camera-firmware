@@ -1,3 +1,9 @@
+camera-firmware (0.0.23) unstable; urgency=low
+
+  * et8ek8: adjust Mode3_4VGA_1296x984_5fps to 24.9994 fps
+
+ -- Sakari Ailus <sakari.ailus@maxwell.research.nokia.com>  Thu, 23 Jul 2009 16:59:45 +0300
+
 camera-firmware (0.0.22) unstable; urgency=low
 
   * et8ek8: clean up sensor mode list, remove useless comments, etc.
