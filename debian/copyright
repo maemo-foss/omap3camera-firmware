@@ -1,15 +1,24 @@
-This package was debianized by Sakari Ailus <sakari.ailus@nokia.com> on
+This package was debianized by Sakari Ailus
+<sakari.ailus@maxwell.research.nokia.com> on
 Tue,  9 Sep 2008 20:04:57 +0300.
 
-It was downloaded from FIXME: <fill in http/ftp site>
+Upstream Author: Sakari Ailus <sakari.ailus@maxwell.research.nokia.com>
 
-Upstream Author: Sakari Ailus <sakari.ailus@nokia.com
+Copyright: Nokia Corporation 2008 -- 2009
 
-Copyright: Nokia Corporation 2008
+License:
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA
 
-License: FIXME: Add license text here.
-
-The Debian packaging is (C) 2008, Nokia Corporation.
-
-
-
+The Debian packaging is (C) 2008 -- 2009, Nokia Corporation.
