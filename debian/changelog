@@ -1,3 +1,9 @@
+camera-firmware (0.0.25) unstable; urgency=low
+
+  * et8ek8: redesign mode 1296x984 @ 30 fps
+
+ -- Sakari Ailus <sakari.ailus@maxwell.research.nokia.com>  Thu, 27 Aug 2009 18:04:17 +0300
+
 camera-firmware (0.0.24) unstable; urgency=low
 
   * Change license to GPL.
